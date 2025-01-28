@@ -27,21 +27,21 @@ import edu.wpi.first.math.util.Units;
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
-  File directory = new File(Filesystem.getDeployDirectory(),"swerve");
-  SwerveDrive  swerveDrive;
+  File directory = new File(Filesystem.getDeployDirectory(), "swerve");
+  SwerveDrive swerveDrive;
 
   public SwerveSubsystem() {
 
-    try
-    {
+    try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.SwerveConstants.maxSpeed,
-                                                                  new Pose2d(new Translation2d(Meter.of(1),
-                                                                                               Meter.of(4)),
-                                                                             Rotation2d.fromDegrees(0)));
-      // Alternative method if you don't want to supply the conversion factor via JSON files.
-      // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
-    } catch (Exception e)
-    {
+          new Pose2d(new Translation2d(Meter.of(1),
+              Meter.of(4)),
+              Rotation2d.fromDegrees(0)));
+      // Alternative method if you don't want to supply the conversion factor via JSON
+      // files.
+      // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
+      // angleConversionFactor, driveConversionFactor);
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
 
@@ -62,7 +62,8 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
+   * An example method querying a boolean state of the subsystem (for example, a
+   * digital sensor).
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
    */
@@ -75,10 +76,15 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     for (SwerveModule swerveModule : swerveDrive.getModules()) {
-      SmartDashboard.putNumber(swerveModule.moduleNumber + " absolute encoder", swerveModule.getAbsoluteEncoder().getAbsolutePosition());
-      SmartDashboard.putNumber(swerveModule.moduleNumber + " turn motor encoder", swerveModule.getAngleMotor().getPosition());
+      SmartDashboard.putNumber(swerveModule.moduleNumber + " absolute encoder",
+          swerveModule.getAbsoluteEncoder().getAbsolutePosition());
+      SmartDashboard.putNumber(swerveModule.moduleNumber + " turn motor encoder",
+          swerveModule.getAngleMotor().getPosition());
+      // SmartDashboard.putBoolean(swerveModule.moduleNumber + " absolute encoder
+      // offset?", swerveModule.getAbsoluteEncoder().setAbsoluteEncoderOffset(
+      // 34.892578));
     }
-    
+
   }
 
   @Override
@@ -91,11 +97,11 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive;
   }
 
-  public void driveFieldOriented(ChassisSpeeds velocity){
+  public void driveFieldOriented(ChassisSpeeds velocity) {
     swerveDrive.driveFieldOriented(velocity);
   }
 
-  public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){
+  public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
     return run(() -> {
       swerveDrive.driveFieldOriented(velocity.get());
     });
