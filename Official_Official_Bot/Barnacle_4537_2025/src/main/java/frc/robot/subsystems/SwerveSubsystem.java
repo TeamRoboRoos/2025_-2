@@ -101,12 +101,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     return swerveDrive;
   }
-  public Pose2d getPose(){
-    return swerveDrive.getPose();
-  }
-  public void resetPose(Pose2d pose){
-    swerveDrive.resetOdometry(pose);
-  }
   public void driveFieldOriented(ChassisSpeeds velocity) {
     swerveDrive.driveFieldOriented(velocity);
   }
