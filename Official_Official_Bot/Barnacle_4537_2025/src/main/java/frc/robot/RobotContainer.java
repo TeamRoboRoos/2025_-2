@@ -14,7 +14,12 @@ import swervelib.SwerveInputStream;
 
 import org.opencv.photo.AlignExposures;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -47,16 +52,16 @@ public class RobotContainer {
   }
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> m_driverController.getLeftY() * -1,
-      () -> m_driverController.getLeftX() * -1)
-      .withControllerRotationAxis(m_driverController::getRightX)
+      () -> -m_driverController.getRawAxis(1),
+      () -> -m_driverController.getRawAxis(0))
+      .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(0.8);
   // .allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
-      .withControllerHeadingAxis(m_driverController::getRightX,
-          m_driverController::getRightY)
+      .withControllerHeadingAxis(() -> -m_driverController.getRawAxis(1),
+          () -> -m_driverController.getRawAxis(0))
       .headingWhile(true);
 
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
@@ -88,6 +93,9 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     m_driverController.rightTrigger().whileTrue(new AlignToTagCommand(drivebase));
+
+    m_driverController.y().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
+    m_driverController.button(0).onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
   }
 
   /**
