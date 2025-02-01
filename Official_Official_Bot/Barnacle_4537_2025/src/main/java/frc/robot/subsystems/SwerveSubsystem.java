@@ -106,6 +106,8 @@ public class SwerveSubsystem extends SubsystemBase {
       // offset?", swerveModule.getAbsoluteEncoder().setAbsoluteEncoderOffset(
       // 34.892578));
     }
+
+    SmartDashboard.putNumber("Gyro", getAHRSAngle().getDegrees());
     posePublisher.set(swerveDrive.getPose());
   }
 
@@ -160,9 +162,9 @@ public class SwerveSubsystem extends SubsystemBase {
               // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
               new PPHolonomicDriveController(
                       // PPHolonomicController is the built in path following controller for holonomic drive trains
-                      new PIDConstants(0.0020645, 0.0, 0.0),
+                      new PIDConstants(0.0034645, 0.004, 0.0),
                       // Translation PID constants
-                      new PIDConstants(0.004, 0.0, 0.0)
+                      new PIDConstants(4.5, 0, 0.01)
                       // Rotation PID constants
               ),
               config,
@@ -194,10 +196,23 @@ public class SwerveSubsystem extends SubsystemBase {
     PathfindingCommand.warmupCommand().schedule();
   }
 
-  public void resetGyro(Rotation2d angle) {
+  public AHRS getAHRS() {
+    return ((AHRS)swerveDrive.getGyro().getIMU());
+  }
 
-    swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, 0));
-    swerveDrive.getGyro().setOffset(swerveDrive.getGyroRotation3d().plus(new Rotation3d(angle)));
+  public Rotation2d getAHRSAngle() {
+    return Rotation2d.fromDegrees(((AHRS)swerveDrive.getGyro().getIMU()).getAngle());
+  }
+
+  public void resetGyro(Rotation2d angle) {
+    Pose2d pose = swerveDrive.getPose();
+    swerveDrive.resetOdometry(new Pose2d(pose.getX(), pose.getY(), angle));
+
+    getAHRS().setAngleAdjustment(0);
+    getAHRS().setAngleAdjustment(-getAHRS().getAngle());
+
+    // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, 0));
+    // swerveDrive.getGyro().setOffset(swerveDrive.getGyroRotation3d().plus(new Rotation3d(angle)));
   }
 
   public void resetPose(Pose2d pose) {

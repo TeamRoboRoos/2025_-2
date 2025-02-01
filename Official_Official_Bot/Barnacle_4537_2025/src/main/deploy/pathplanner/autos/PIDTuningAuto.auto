@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueSingleCenterAuto1"
+            "pathName": "RotationPID"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "PlaceCoral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BlueSingleCenterAuto2"
+            "waitTime": 2.0
           }
         }
       ]
