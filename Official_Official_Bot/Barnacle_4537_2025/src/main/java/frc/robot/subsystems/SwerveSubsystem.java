@@ -14,26 +14,38 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
 import java.util.function.Supplier;
+
+
+import com.studica.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
+import swervelib.imu.NavXSwerve;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
   File directory = new File(Filesystem.getDeployDirectory(), "swerve");
   SwerveDrive swerveDrive;
+
+  StructPublisher<Pose2d> posePublisher;
 
   public SwerveSubsystem() {
 
@@ -42,6 +54,7 @@ public class SwerveSubsystem extends SubsystemBase {
           new Pose2d(new Translation2d(Meter.of(1),
               Meter.of(4)),
               Rotation2d.fromDegrees(0)));
+      swerveDrive.setHeadingCorrection(false);
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -49,6 +62,10 @@ public class SwerveSubsystem extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+
+    posePublisher = NetworkTableInstance.getDefault()
+    .getStructTopic("RobotPose", Pose2d.struct).publish();
+
     setupPathPlanner();
   }
 
@@ -89,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
       // offset?", swerveModule.getAbsoluteEncoder().setAbsoluteEncoderOffset(
       // 34.892578));
     }
-
+    posePublisher.set(swerveDrive.getPose());
   }
 
   @Override
@@ -175,5 +192,19 @@ public class SwerveSubsystem extends SubsystemBase {
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
+  }
+
+  public void resetGyro(Rotation2d angle) {
+
+    swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, 0));
+    swerveDrive.getGyro().setOffset(swerveDrive.getGyroRotation3d().plus(new Rotation3d(angle)));
+  }
+
+  public void resetPose(Pose2d pose) {
+    swerveDrive.resetOdometry(pose);
+  }
+
+  public void stopPlease() {
+    swerveDrive.driveFieldOriented(new ChassisSpeeds(0, 0, 0));
   }
 }
