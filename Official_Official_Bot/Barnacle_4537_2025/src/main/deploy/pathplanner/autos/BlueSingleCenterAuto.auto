@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "BlueSingleCenterAuto1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "potato"
+            "name": "PlaceCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueSingleCenterAuto2"
           }
         }
       ]
