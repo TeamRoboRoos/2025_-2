@@ -20,7 +20,6 @@ import static edu.wpi.first.units.Units.Meter;
 import java.io.File;
 import java.util.function.Supplier;
 
-
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Filesystem;
@@ -64,7 +63,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     posePublisher = NetworkTableInstance.getDefault()
-    .getStructTopic("RobotPose", Pose2d.struct).publish();
+        .getStructTopic("RobotPose", Pose2d.struct).publish();
 
     setupPathPlanner();
   }
@@ -120,6 +119,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     return swerveDrive;
   }
+
   public void driveFieldOriented(ChassisSpeeds velocity) {
     swerveDrive.driveFieldOriented(velocity);
   }
@@ -130,78 +130,74 @@ public class SwerveSubsystem extends SubsystemBase {
     });
   }
 
-  public void setupPathPlanner()
-  {
+  public void setupPathPlanner() {
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
     RobotConfig config;
-    try
-    {
+    try {
       config = RobotConfig.fromGUISettings();
 
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last
       AutoBuilder.configure(
-              swerveDrive::getPose,
-              swerveDrive::resetOdometry,
-              swerveDrive::getRobotVelocity,
-              // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-              (speedsRobotRelative, moduleFeedForwards) -> {
-                if (enableFeedforward)
-                {
-                  swerveDrive.drive(
-                          speedsRobotRelative,
-                          swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
-                          moduleFeedForwards.linearForces()
-                  );
-                } else
-                {
-                  swerveDrive.setChassisSpeeds(speedsRobotRelative);
-                }
-              },
-              // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-              new PPHolonomicDriveController(
-                      // PPHolonomicController is the built in path following controller for holonomic drive trains
-                      new PIDConstants(0.0034645, 0.004, 0.0),
-                      // Translation PID constants
-                      new PIDConstants(4.5, 0, 0.01)
-                      // Rotation PID constants
-              ),
-              config,
-              // The robot configuration
-              () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          swerveDrive::getPose,
+          swerveDrive::resetOdometry,
+          swerveDrive::getRobotVelocity,
+          // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speedsRobotRelative, moduleFeedForwards) -> {
+            if (enableFeedforward) {
+              swerveDrive.drive(
+                  speedsRobotRelative,
+                  swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                  moduleFeedForwards.linearForces());
+            } else {
+              swerveDrive.setChassisSpeeds(speedsRobotRelative);
+            }
+          },
+          // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also
+          // optionally outputs individual module feedforwards
+          new PPHolonomicDriveController(
+              // PPHolonomicController is the built in path following controller for holonomic
+              // drive trains
+              new PIDConstants(0.0034645, 0.004, 0.0),
+              // Translation PID constants
+              new PIDConstants(4.5, 0, 0.01)
+          // Rotation PID constants
+          ),
+          config,
+          // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent())
-                {
-                  return alliance.get() == DriverStation.Alliance.Red;
-                }
-                return false;
-              },
-              this
-              // Reference to this subsystem to set requirements
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this
+      // Reference to this subsystem to set requirements
       );
 
-    } catch (Exception e)
-    {
+    } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
     }
 
-    //Preload PathPlanner Path finding
+    // Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
   }
 
   public AHRS getAHRS() {
-    return ((AHRS)swerveDrive.getGyro().getIMU());
+    return ((AHRS) swerveDrive.getGyro().getIMU());
   }
 
   public Rotation2d getAHRSAngle() {
-    return Rotation2d.fromDegrees(((AHRS)swerveDrive.getGyro().getIMU()).getAngle());
+    return Rotation2d.fromDegrees(((AHRS) swerveDrive.getGyro().getIMU()).getAngle());
   }
 
   public void resetGyro(Rotation2d angle) {
@@ -210,9 +206,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
     getAHRS().setAngleAdjustment(0);
     getAHRS().setAngleAdjustment(-getAHRS().getAngle());
+  }
 
-    // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, 0));
-    // swerveDrive.getGyro().setOffset(swerveDrive.getGyroRotation3d().plus(new Rotation3d(angle)));
+  // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, 0));
+  // swerveDrive.getGyro().setOffset(swerveDrive.getGyroRotation3d().plus(new
+  // Rotation3d(angle)));
+  public void driveRobotOriented(ChassisSpeeds velocity) {
+    swerveDrive.drive(velocity);
   }
 
   public void resetPose(Pose2d pose) {

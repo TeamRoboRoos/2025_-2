@@ -4,7 +4,12 @@
 
 package frc.robot.commands;
 
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,41 +21,89 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class AlignToTagCommand extends Command {
   private SwerveSubsystem swerve;
 
+  private PIDController sidewaysPidController, rotationaPidController;
+  private boolean shouldFinish = false;
+
+  private Queue<Double> runningAverage;
+
+  private static final int runningAverageSize = 20;
+
   /** Creates a new AlignToTagCommand. */
   public AlignToTagCommand(SwerveSubsystem swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerve = swerve;
     addRequirements(swerve);
 
-    SmartDashboard.putNumber("limeyp", 0.06);
+    SmartDashboard.putNumber("limeySideP", 0.06);
+    SmartDashboard.putNumber("limeyRotP", 0.03);
+    SmartDashboard.putNumber("limeySideI", 0.0);
+    SmartDashboard.putNumber("limeyRotI", 0.0);
+    SmartDashboard.putNumber("limeySideD", 0.0);
+    SmartDashboard.putNumber("limeyRotD", 0.0);
+
+    runningAverage = new LinkedList<Double>();
+
+    sidewaysPidController = new PIDController(0.06, 0, 0);
+    rotationaPidController = new PIDController(0.03, 0, 0);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("hello");
+    shouldFinish = false;
+    SmartDashboard.putBoolean("running", true);
+
+    runningAverage.clear();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    double pid_thing = SmartDashboard.getNumber("limeyp", 0);
+    sidewaysPidController.setP(SmartDashboard.getNumber("limeySideP", 0));
+    rotationaPidController.setP(SmartDashboard.getNumber("limeyRotP", 0));
+    sidewaysPidController.setI(SmartDashboard.getNumber("limeySideI", 0));
+    rotationaPidController.setI(SmartDashboard.getNumber("limeyRotI", 0));
+    sidewaysPidController.setD(SmartDashboard.getNumber("limeySideD", 0));
+    rotationaPidController.setD(SmartDashboard.getNumber("limeyRotD", 0));
 
     double tx, ty, ta;
     tx = LimelightHelpers.getTX(LimelightConstants.limelightName);
     ty = LimelightHelpers.getTY(LimelightConstants.limelightName);
     ta = LimelightHelpers.getTA(LimelightConstants.limelightName);
 
-    double cool_variable = tx * -1 * pid_thing;
+    double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
+    double bot_pose_yaw = botpose_targetspace[4];
+    runningAverage.add(bot_pose_yaw);
+    if (runningAverage.size() > runningAverageSize) {
+      runningAverage.poll();
+    }
 
-    swerve.driveFieldOriented(new ChassisSpeeds(0, cool_variable, 0));
+    bot_pose_yaw = 0;
+    for (double val : runningAverage) {
+      bot_pose_yaw += val;
+    }
+    bot_pose_yaw /= runningAverage.size();
 
+    SmartDashboard.putNumber("bot_pose_yaw", bot_pose_yaw);
+
+    // double sideways_velocity = tx * -1 * sideways_pid;
+    double sideways_velocity = sidewaysPidController.calculate(tx, 0);
+    double rotational_velocity = rotationaPidController.calculate(-bot_pose_yaw, 0);
+
+    swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, rotational_velocity));
+
+    if (Math.abs(bot_pose_yaw) < LimelightConstants.rotationalTolerance
+        && Math.abs(tx) < LimelightConstants.sidewaysTolerance && runningAverage.size() > runningAverageSize) {
+      shouldFinish = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("running", false);
     swerve.stopPlease();
 
   }
@@ -58,6 +111,6 @@ public class AlignToTagCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return shouldFinish;
   }
 }
