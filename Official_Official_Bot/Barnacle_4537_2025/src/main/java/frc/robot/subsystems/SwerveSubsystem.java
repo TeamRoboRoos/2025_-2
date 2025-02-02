@@ -12,6 +12,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
 import static edu.wpi.first.units.Units.Degree;
@@ -25,6 +26,7 @@ import com.studica.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import swervelib.SwerveDriveTest;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
@@ -142,7 +144,7 @@ public class SwerveSubsystem extends SubsystemBase {
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last
       AutoBuilder.configure(
-              swerveDrive::getPose,
+              this::getPose2d,
               swerveDrive::resetOdometry,
               swerveDrive::getRobotVelocity,
               // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -162,9 +164,9 @@ public class SwerveSubsystem extends SubsystemBase {
               // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
               new PPHolonomicDriveController(
                       // PPHolonomicController is the built in path following controller for holonomic drive trains
-                      new PIDConstants(0.0034645, 0.004, 0.0),
+                      new PIDConstants(0.037272, 0.0, 0.0),
                       // Translation PID constants
-                      new PIDConstants(4.5, 0, 0.01)
+                      new PIDConstants(0.021718, 0, 0.01)
                       // Rotation PID constants
               ),
               config,
@@ -221,5 +223,24 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void stopPlease() {
     swerveDrive.driveFieldOriented(new ChassisSpeeds(0, 0, 0));
+  }
+  public Command sysIdDriveMotorCommand()
+  {
+    return SwerveDriveTest.generateSysIdCommand(
+            SwerveDriveTest.setDriveSysIdRoutine(
+                    new SysIdRoutine.Config(),
+                    this, swerveDrive, 12, false),
+            3.0, 5.0, 3.0);
+  }
+  public Command sysIdAngleMotorCommand()
+  {
+    return SwerveDriveTest.generateSysIdCommand(
+            SwerveDriveTest.setAngleSysIdRoutine(
+                    new SysIdRoutine.Config(),
+                    this, swerveDrive),
+            3.0, 5.0, 3.0);
+  }
+  public Pose2d getPose2d(){
+    return new Pose2d(swerveDrive.getPose().getX(), swerveDrive.getPose().getY(), getAHRSAngle());
   }
 }

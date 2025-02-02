@@ -27,18 +27,6 @@
           "data": {
             "waitTime": 5.0
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TestAuto3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
         }
       ]
     }

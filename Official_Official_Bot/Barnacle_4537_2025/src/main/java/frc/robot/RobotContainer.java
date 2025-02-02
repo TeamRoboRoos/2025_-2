@@ -104,6 +104,8 @@ public class RobotContainer {
 
     m_driverController.y().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.button(1).onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+    m_driverController.button(2).whileTrue(drivebase.sysIdDriveMotorCommand());
+    m_driverController.x().whileTrue(drivebase.sysIdAngleMotorCommand());
   }
 
   /**
