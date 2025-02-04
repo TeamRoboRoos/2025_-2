@@ -11,6 +11,7 @@ import java.util.Queue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
@@ -23,6 +24,8 @@ public class AlignToTagCommand extends Command {
 
   private PIDController sidewaysPidController, rotationaPidController;
   private boolean shouldFinish = false;
+
+  private int primaryTag = 0;
 
   private Queue<Double> runningAverage;
 
@@ -40,6 +43,7 @@ public class AlignToTagCommand extends Command {
     SmartDashboard.putNumber("limeyRotI", 0.0);
     SmartDashboard.putNumber("limeySideD", 0.0);
     SmartDashboard.putNumber("limeyRotD", 0.0);
+    primaryTag = 0;
 
     runningAverage = new LinkedList<Double>();
 
@@ -52,9 +56,13 @@ public class AlignToTagCommand extends Command {
   @Override
   public void initialize() {
     shouldFinish = false;
+    primaryTag = (int) NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getNumber(0);
+    SmartDashboard.putNumber("primaryTag", primaryTag);
+
     SmartDashboard.putBoolean("running", true);
 
     runningAverage.clear();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -98,9 +106,14 @@ public class AlignToTagCommand extends Command {
         && Math.abs(tx) < LimelightConstants.sidewaysTolerance && runningAverage.size() > runningAverageSize) {
       shouldFinish = true;
     }
+
+    if ((int) SmartDashboard.getNumber("tid", 0) != primaryTag) {
+      shouldFinish = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
+
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("running", false);
@@ -111,6 +124,7 @@ public class AlignToTagCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return shouldFinish;
   }
 }

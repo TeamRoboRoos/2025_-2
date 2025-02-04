@@ -25,7 +25,7 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double maxSpeed = Units.feetToMeters(10);
+    public static final double maxSpeed = Units.feetToMeters(5);
 
   }
 
