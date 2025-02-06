@@ -56,7 +56,7 @@ public class SwerveSubsystem extends SubsystemBase {
           new Pose2d(new Translation2d(Meter.of(1),
               Meter.of(4)),
               Rotation2d.fromDegrees(0)));
-      swerveDrive.setHeadingCorrection(false);
+      swerveDrive.setHeadingCorrection(true);
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -166,7 +166,7 @@ public class SwerveSubsystem extends SubsystemBase {
                       // PPHolonomicController is the built in path following controller for holonomic drive trains
                       new PIDConstants(0.037272, 0.0, 0.0),
                       // Translation PID constants
-                      new PIDConstants(0.021718, 0, 0.01)
+                      new PIDConstants(0.021718, 0, 0.06)
                       // Rotation PID constants
               ),
               config,
