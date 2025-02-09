@@ -63,7 +63,7 @@ public class RobotContainer {
       () -> -m_driverController.getRawAxis(0))
       .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
       .deadband(OperatorConstants.DEADBAND)
-      .scaleTranslation(0.8);
+      .scaleTranslation(1.0);
   // .allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
