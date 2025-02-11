@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.LimelightHelpers;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Meter;
@@ -42,6 +44,11 @@ import edu.wpi.first.units.measure.Angle;
 
 public class SwerveSubsystem extends SubsystemBase {
 
+  private Queue<Double> runningAverage;
+
+  private double last_bot_pose_yaw;
+  private double bot_pose_yaw;
+
   /** Creates a new ExampleSubsystem. */
 
   File directory = new File(Filesystem.getDeployDirectory(), "swerve");
@@ -50,6 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
   StructPublisher<Pose2d> posePublisher;
 
   public SwerveSubsystem() {
+    runningAverage = new LinkedList<Double>();
 
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.SwerveConstants.maxSpeed,
@@ -118,6 +126,38 @@ public class SwerveSubsystem extends SubsystemBase {
       // SmartDashboard.putBoolean(swerveModule.moduleNumber + " absolute encoder
       // offset?", swerveModule.getAbsoluteEncoder().setAbsoluteEncoderOffset(
       // 34.892578));
+    }
+    double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
+    double bot_pose_yaw = last_bot_pose_yaw;
+    if ((int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
+        .getInteger(0) != -1) {
+      bot_pose_yaw = botpose_targetspace[4];
+      last_bot_pose_yaw = bot_pose_yaw;
+    }
+    SmartDashboard.putNumber("something", bot_pose_yaw);
+
+    double runningAverageSize = 20;
+    runningAverage.add(bot_pose_yaw);
+    if (runningAverage.size() > runningAverageSize) {
+      runningAverage.poll();
+    }
+    bot_pose_yaw = 0;
+    for (double val : runningAverage) {
+      bot_pose_yaw += val;
+    }
+    bot_pose_yaw /= runningAverage.size();
+    SmartDashboard.putNumber("something2", bot_pose_yaw);
+
+    if ((int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
+        .getInteger(0) != -1) {
+      SmartDashboard.putBoolean("Aligned To Tag Angle", ((NetworkTableInstance.getDefault().getTable("limelight-limey")
+          .getEntry("camerapose_targetspace").getDoubleArray(new double[6]))[4]) < 1);
+      SmartDashboard.putBoolean("Ready To Score", ((NetworkTableInstance.getDefault().getTable("limelight-limey")
+          .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[2]) > -0.5);
+
+    } else {
+      SmartDashboard.putBoolean("Aligned To Tag Angle", false);
+      SmartDashboard.putBoolean("Ready To Score", false);
     }
 
     SmartDashboard.putNumber("Gyro", getAHRSAngle().getDegrees());

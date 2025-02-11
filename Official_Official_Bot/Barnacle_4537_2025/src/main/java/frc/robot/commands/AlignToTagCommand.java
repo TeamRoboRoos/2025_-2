@@ -31,10 +31,11 @@ public class AlignToTagCommand extends Command {
   private Queue<Double> ummeasureAngleAverage;
 
   private double last_tx;
+  private double last_bot_pose_yaw;
+
+  private double count = 0;
 
   private boolean first_rotated = false;
-
-  private double last_bot_pose_yaw;
 
   private static final int runningAverageSize = 30;
 
@@ -53,6 +54,7 @@ public class AlignToTagCommand extends Command {
     SmartDashboard.putNumber("limeySideD", 0.0);
     SmartDashboard.putNumber("limeyRotD", 0.0);
     SmartDashboard.putNumber("threshold", 10);
+    SmartDashboard.putNumber("angle_threshold", 10);
 
     runningAverage = new LinkedList<Double>();
     ummeasureAngleAverage = new LinkedList<Double>();
@@ -77,6 +79,9 @@ public class AlignToTagCommand extends Command {
     shouldFinish = false;
 
     first_rotated = false;
+    last_tx = 0;
+    last_bot_pose_yaw = 0;
+    count = 0;
 
   }
 
@@ -101,21 +106,15 @@ public class AlignToTagCommand extends Command {
     ta = LimelightHelpers.getTA(LimelightConstants.limelightName);
 
     double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
-    double bot_pose_yaw = botpose_targetspace[4];
+    double bot_pose_yaw = last_bot_pose_yaw;
 
     if (limelight_tid > -1) {
-      SmartDashboard.putBoolean("found_target", true);
-      SmartDashboard.putBoolean("is_adjusting", true);
-
-      // last_bot_pose_yaw = bot_pose_yaw;
+      bot_pose_yaw = botpose_targetspace[4];
+      last_bot_pose_yaw = bot_pose_yaw;
       last_tx = tx;
       sideways_velocity = (sidewaysPidController.calculate(tx, 0));
 
     } else {
-      SmartDashboard.putBoolean("found_target", false);
-      SmartDashboard.putBoolean("is_adjusting", false);
-      SmartDashboard.putNumber("hello", bot_pose_yaw);
-      System.out.println(bot_pose_yaw);
       tx = last_tx;
       sideways_velocity = (sidewaysPidController.calculate(tx, 0)) * 0.7;
 
@@ -150,23 +149,49 @@ public class AlignToTagCommand extends Command {
     // double sideways_velocity = tx * -1 * sideways_pid;
     double rotational_velocity = 0;
 
-    if (limelight_tid > -1) {
-      rotational_velocity = rotationaPidController.calculate(-bot_pose_yaw, 0);
-    }
+    rotational_velocity = rotationaPidController.calculate(-bot_pose_yaw, 0);
 
     double threshold = SmartDashboard.getNumber("threshold", 10);
-    if (first_rotated == false) {
-      if (angle_thing < threshold) {
-        swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-        SmartDashboard.putBoolean("under 10", true);
-        first_rotated = true;
-      } else {
-        swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
-        SmartDashboard.putBoolean("under 10", false);
-      }
-    } else {
+
+    // if (first_rotated == false) {
+    // if (angle_thing < threshold) {
+    // swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    // SmartDashboard.putBoolean("under 10", true);
+    // first_rotated = true;
+    // } else {
+    // swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
+    // SmartDashboard.putBoolean("under 10", false);
+    // }
+    // } else {
+    // swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    // SmartDashboard.putBoolean("under 10", true);
+    // }
+    // System.out.println(SmartDashboard.getNumber("something2", 1));
+    // if (Math.abs(SmartDashboard.getNumber("something2", 1)) > threshold) {
+    // if (count > 20) {
+    // System.out.println("yay!");
+    // } else {
+    // count += 1;
+    // System.out.println("wat");
+    // }
+    // } else {
+    // System.out.println("no");
+    // count = 0;
+    // }
+    // SmartDashboard.putNumber("COUNT", count);
+    double angle_threshold = SmartDashboard.getNumber("angle_threshold", 1);
+    count += 1;
+    System.out.println(count);
+
+    if (count > threshold) {
       swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-      SmartDashboard.putBoolean("under 10", true);
+    } else {
+
+      swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
+      if (angle_threshold > Math.abs(SmartDashboard.getNumber("something2", 100))) {
+        System.out.println("HAPPY");
+        count += threshold;
+      }
     }
 
     if (Math.abs(bot_pose_yaw) < LimelightConstants.rotationalTolerance
