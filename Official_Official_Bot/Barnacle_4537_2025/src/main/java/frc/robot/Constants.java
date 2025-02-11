@@ -25,7 +25,7 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double maxSpeed = Units.feetToMeters(5);
+    public static final double maxSpeed = Units.feetToMeters(10);
 
   }
 
@@ -34,7 +34,7 @@ public final class Constants {
     public static final double limeySidep = 0.06;
     public static final double limeyRotp = 0.01;
     public static final double rotationalTolerance = 0.25;
-    public static final double sidewaysTolerance = 0.25;
+    public static final double sidewaysTolerance = 0.5;
 
   }
 }

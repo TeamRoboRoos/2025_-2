@@ -18,6 +18,8 @@ import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.function.Supplier;
 
 import com.studica.frc.AHRS;
@@ -39,6 +41,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
 
 public class SwerveSubsystem extends SubsystemBase {
+
   /** Creates a new ExampleSubsystem. */
 
   File directory = new File(Filesystem.getDeployDirectory(), "swerve");
@@ -95,6 +98,17 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("tz", (NetworkTableInstance.getDefault().getTable("limelight-limey")
+        .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[2]);
+    SmartDashboard.putNumber("botpose_targetspace", (NetworkTableInstance.getDefault().getTable("limelight-limey")
+        .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[4]);
+    SmartDashboard.putNumber("camerapose_targetspace", (NetworkTableInstance.getDefault().getTable("limelight-limey")
+        .getEntry("camerapose_targetspace").getDoubleArray(new double[6]))[4]);
+    SmartDashboard.putNumber("targetpose_cameraspace", (NetworkTableInstance.getDefault().getTable("limelight-limey")
+        .getEntry("targetpose_cameraspace").getDoubleArray(new double[6]))[4]);
+    SmartDashboard.putNumber("targetpose_robotspace", (NetworkTableInstance.getDefault().getTable("limelight-limey")
+        .getEntry("targetpose_robotspace").getDoubleArray(new double[6]))[4]);
     // This method will be called once per scheduler run
     for (SwerveModule swerveModule : swerveDrive.getModules()) {
       SmartDashboard.putNumber(swerveModule.moduleNumber + " absolute encoder",
@@ -108,6 +122,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Gyro", getAHRSAngle().getDegrees());
     posePublisher.set(swerveDrive.getPose());
+
   }
 
   @Override

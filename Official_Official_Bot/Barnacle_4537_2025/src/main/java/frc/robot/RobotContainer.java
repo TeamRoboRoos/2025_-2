@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToTagCommand;
+import frc.robot.commands.DriveWithAlignment;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -101,6 +102,7 @@ public class RobotContainer {
     // pressed,
     // cancelling on release.
     m_driverController.R2().whileTrue(new AlignToTagCommand(drivebase));
+    m_driverController.L2().whileTrue(new DriveWithAlignment(drivebase));
 
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.square()
