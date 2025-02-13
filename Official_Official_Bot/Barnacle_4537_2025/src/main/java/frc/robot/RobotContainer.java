@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToTagCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -34,9 +35,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  protected final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final CannonSubsystem m_cannonSubsystem = new CannonSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -96,6 +98,7 @@ public class RobotContainer {
 
     m_driverController.y().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
     m_driverController.button(0).onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+    m_driverController.button(1).onTrue(m_cannonSubsystem.runCannon());
   }
 
   /**
