@@ -160,8 +160,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putBoolean("Ready To Score", false);
     }
 
-    simplifyGyro();
-    SmartDashboard.putNumber("Gyro", getAHRSAngle().getDegrees());
+    SmartDashboard.putNumber("Gyro", inputModulus(getAHRSAngle().getDegrees(), -180, 180));
     posePublisher.set(swerveDrive.getPose());
 
   }
@@ -262,6 +261,19 @@ public class SwerveSubsystem extends SubsystemBase {
 
     getAHRS().setAngleAdjustment(0);
   }
+  public static double inputModulus(double input, double minimumInput, double maximumInput) {
+    double modulus = maximumInput - minimumInput;
+
+    // Wrap input if it's above the maximum input
+    int numMax = (int) ((input - minimumInput) / modulus);
+    input -= numMax * modulus;
+
+     // Wrap input if it's below the minimum input
+    int numMin = (int) ((input - maximumInput) / modulus);
+    input -= numMin * modulus;
+
+    return input;
+  }
 
   public void simplifyGyro() {
     double gyro = getAHRSAngle().getDegrees();
@@ -269,8 +281,17 @@ public class SwerveSubsystem extends SubsystemBase {
     getAHRS().setAngleAdjustment(gyro % 360);
     if (gyro < 0) {
       getAHRS().setAngleAdjustment(-gyro);
+      // if (Math.abs(getAHRSAngle().getDegrees()) > 180) {
+      //   getAHRS().setAngleAdjustment(-(getAHRSAngle().getDegrees()%180));
+      // } 
+    // } else if (gyro > 0) {
+    //   if (Math.abs(getAHRSAngle().getDegrees()) > 180) {
+    //     getAHRS().setAngleAdjustment(-(getAHRSAngle().getDegrees()%180));
+    //   } 
     }
+
   }
+
 
   // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, 0));
   // swerveDrive.getGyro().setOffset(swerveDrive.getGyroRotation3d().plus(new
