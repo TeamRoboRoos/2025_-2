@@ -211,7 +211,6 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.resetOdometry(new Pose2d(pose.getX(), pose.getY(), angle));
 
     getAHRS().setAngleAdjustment(0);
-    getAHRS().setAngleAdjustment(-getAHRS().getAngle());
 
     // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, 0));
     // swerveDrive.getGyro().setOffset(swerveDrive.getGyroRotation3d().plus(new Rotation3d(angle)));
