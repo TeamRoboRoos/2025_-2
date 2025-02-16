@@ -144,7 +144,7 @@ public class SwerveSubsystem extends SubsystemBase {
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last
       AutoBuilder.configure(
-              this::getPose2d,
+              swerveDrive::getPose,
               swerveDrive::resetOdometry,
               swerveDrive::getRobotVelocity,
               // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
