@@ -56,6 +56,8 @@ public class AlignToTagCommand extends Command {
     SmartDashboard.putNumber("threshold", 10);
     SmartDashboard.putNumber("angle_threshold", 10);
 
+    SmartDashboard.putNumber("Close_Rot_P", 10);
+
     runningAverage = new LinkedList<Double>();
     ummeasureAngleAverage = new LinkedList<Double>();
     first_rotated = false;
@@ -142,6 +144,8 @@ public class AlignToTagCommand extends Command {
       angle_thing += val;
     }
     angle_thing /= ummeasureAngleAverage.size();
+
+    // The average of the last 20 angle measurements of the tag
     SmartDashboard.putNumber("averaged_angle", angle_thing);
 
     SmartDashboard.putNumber("bot_pose_yaw", bot_pose_yaw);
@@ -190,7 +194,11 @@ public class AlignToTagCommand extends Command {
       swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
       if (angle_threshold > Math.abs(SmartDashboard.getNumber("something2", 100))) {
         System.out.println("HAPPY");
+        SmartDashboard.putBoolean("fr alinged?", true);
         count += threshold;
+      } else {
+
+        SmartDashboard.putBoolean("fr alinged?", false);
       }
     }
 
