@@ -11,12 +11,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.LimelightConstants;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TurnToAngleCommand extends Command {
-  private Subsystem swerve;
+  private SwerveSubsystem swerve;
 
   private PIDController turningPidController;
 
@@ -35,6 +37,7 @@ public class TurnToAngleCommand extends Command {
     SmartDashboard.putNumber("turningP", 0.06);
     SmartDashboard.putNumber("turningI", 0.06);
     SmartDashboard.putNumber("turningD", 0.06);
+    SmartDashboard.putBoolean("runningCommand", false);
 
     turningPidController = new PIDController(0.06, 0, 0);
 
@@ -43,11 +46,17 @@ public class TurnToAngleCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    tid = 0;
+    tid = -1;
     tid = (int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
         .getInteger(0);
+    
 
     shouldFinish = false;
+    if (tid == -1) {
+      shouldFinish = true;
+    }
+    SmartDashboard.putNumber("chosen_id", tid);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,7 +67,7 @@ public class TurnToAngleCommand extends Command {
     turningPidController.setI(SmartDashboard.getNumber("turningI", 0));
     turningPidController.setD(SmartDashboard.getNumber("turningD", 0));
 
-    int desired_angle = AprilTags[tid];
+    int desired_angle = AprilTags[tid-1];
 
     double rotational_velocity = turningPidController.calculate(SmartDashboard.getNumber("Gyro", 0), desired_angle);
 
@@ -74,6 +83,10 @@ public class TurnToAngleCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    
+    SmartDashboard.putNumber("chosen_id", -1);
+    
+    SmartDashboard.putBoolean("runningCommand", false);
     swerve.stopPlease();
   }
 

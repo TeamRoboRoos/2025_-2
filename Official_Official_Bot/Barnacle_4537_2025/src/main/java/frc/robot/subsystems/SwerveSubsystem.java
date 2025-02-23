@@ -182,6 +182,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
     return run(() -> {
       swerveDrive.driveFieldOriented(velocity.get());
+      
     });
   }
 
@@ -298,6 +299,7 @@ public class SwerveSubsystem extends SubsystemBase {
   // Rotation3d(angle)));
   public void driveRobotOriented(ChassisSpeeds velocity) {
     swerveDrive.drive(velocity);
+    
   }
 
   public void resetPose(Pose2d pose) {
