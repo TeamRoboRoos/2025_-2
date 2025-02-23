@@ -119,7 +119,6 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public SwerveDrive getSwerveDrive() {
-
     return swerveDrive;
   }
   public void driveFieldOriented(ChassisSpeeds velocity) {

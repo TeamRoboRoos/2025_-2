@@ -7,31 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto1"
+            "pathName": "RedRightAuto1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto2"
+            "pathName": "RedRightAuto2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto3"
+            "pathName": "RedRightAuto3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto4"
+            "pathName": "RedRightAuto4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto3"
+            "pathName": "RedRightAuto3"
           }
         }
       ]
