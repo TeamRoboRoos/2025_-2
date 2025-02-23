@@ -27,13 +27,17 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double maxSpeed = Units.feetToMeters(4.5);
+    public static final double maxSpeed = Units.feetToMeters(2);
 
   }
 
   public static class LimelightConstants {
     public static final String limelightName = "limelight-limey";
-    public static final double limeyp = 0.06;
+    public static final double limeySidep = 0.06;
+    public static final double limeyRotp = 0.01;
+    public static final double rotationalTolerance = 0.25;
+    public static final double sidewaysTolerance = 0.5;
+
   }
   public static final class ShuffleboardTabs {
 
