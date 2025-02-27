@@ -35,6 +35,8 @@ public class DriveWithAlignment extends Command {
 
   private static final int ummeasureAngleSize = 10;
 
+  private boolean initial_sideways_alignment;
+
   /** Creates a new DriveWithAlignment. */
   public DriveWithAlignment(SwerveSubsystem swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -63,6 +65,8 @@ public class DriveWithAlignment extends Command {
     sidewaysPidController = new PIDController(0.06, 0, 0);
     rotationaPidController = new PIDController(0.03, 0, 0);
     forwardsPidController = new PIDController(0.03, 0, 0);
+
+    initial_sideways_alignment = false;
   }
 
   // Called when the command is initially scheduled.
@@ -72,6 +76,8 @@ public class DriveWithAlignment extends Command {
     SmartDashboard.putBoolean("running", true);
     SmartDashboard.putBoolean("found_target", false);
     SmartDashboard.putBoolean("finished_alignment", false);
+    SmartDashboard.putNumber("primaryTag!", (int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
+    .getInteger(0));
 
     runningAverage.clear();
     ummeasureAngleAverage.clear();
@@ -85,8 +91,7 @@ public class DriveWithAlignment extends Command {
   @Override
   public void execute() {
     double sideways_velocity = 0;
-    int limelight_tid = (int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
-        .getInteger(0);
+    int limelight_tid = (int) SmartDashboard.getNumber("primaryTag!", -1);
 
     sidewaysPidController.setP(SmartDashboard.getNumber("limeySideP", 0));
     rotationaPidController.setP(SmartDashboard.getNumber("limeyRotP", 0));
@@ -110,24 +115,18 @@ public class DriveWithAlignment extends Command {
     double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
     double bot_pose_yaw = botpose_targetspace[4];
 
+    // If the limelight sees a tag, all is well, but if it doesnt, go at previous speed but slower
     if (limelight_tid > -1) {
-      SmartDashboard.putBoolean("found_target", true);
-      SmartDashboard.putBoolean("is_adjusting", true);
-
-      // last_bot_pose_yaw = bot_pose_yaw;
       last_tx = tx;
       sideways_velocity = (sidewaysPidController.calculate(tx, 0));
 
     } else {
-      SmartDashboard.putBoolean("found_target", false);
-      SmartDashboard.putBoolean("is_adjusting", false);
-      SmartDashboard.putNumber("hello", bot_pose_yaw);
-      System.out.println(bot_pose_yaw);
       tx = last_tx;
       sideways_velocity = (sidewaysPidController.calculate(tx, 0)) * 0.7;
-
     }
     SmartDashboard.putNumber("sideways_velocity", sideways_velocity);
+
+    // Gets an average value for the angle of tag in relation to robot
     runningAverage.add(bot_pose_yaw);
     if (runningAverage.size() > runningAverageSize) {
       runningAverage.poll();
@@ -139,20 +138,7 @@ public class DriveWithAlignment extends Command {
     }
     bot_pose_yaw /= runningAverage.size();
 
-    ummeasureAngleAverage.add(Math.abs((NetworkTableInstance.getDefault().getTable("limelight-limey")
-        .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[4]));
-    if (ummeasureAngleAverage.size() > ummeasureAngleSize) {
-      ummeasureAngleAverage.poll();
-    }
-
-    double angle_thing = 0;
-    for (double val : ummeasureAngleAverage) {
-      angle_thing += val;
-    }
-    angle_thing /= ummeasureAngleAverage.size();
-    SmartDashboard.putNumber("averaged_angle", angle_thing);
-
-    SmartDashboard.putNumber("bot_pose_yaw", bot_pose_yaw);
+    SmartDashboard.putNumber("average yaw angle", bot_pose_yaw);
 
     // double sideways_velocity = tx * -1 * sideways_pid;
     double rotational_velocity = 0;
@@ -179,18 +165,37 @@ public class DriveWithAlignment extends Command {
     // SmartDashboard.putBoolean("under 10", true);
     // }
 
-    if (first_rotated == false) {
-      if (Math.abs(tx) < threshold) {
-        swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, 0, 0));
-        SmartDashboard.putBoolean("under 10", true);
-      } else {
-        swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-        SmartDashboard.putBoolean("under 10", false);
-      }
-    } else {
-      swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, 0, 0));
-      SmartDashboard.putBoolean("under 10", true);
+    // if (first_rotated == false) {
+    //   if (Math.abs(tx) < threshold) {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, 0, 0));
+    //     SmartDashboard.putBoolean("under 10", true);
+    //   } else {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    //     SmartDashboard.putBoolean("under 10", false);
+    //   }
+    // } else {
+    //   swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, 0, 0));
+    //   SmartDashboard.putBoolean("under 10", true);
+    // }
+
+// If its not initially side ways aligned, align it. Then just drive since it will align itself. Only realign sideways
+// if it goes way off course
+  
+  if (initial_sideways_alignment == false) {
+    swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    if (Math.abs(tx) < 5) {
+      initial_sideways_alignment = true;
     }
+  } else {
+    if(Math.abs(tx) < 10) {
+      swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, 0, 0));
+    } else {
+      swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+      initial_sideways_alignment = false;
+    }
+  }
+
+    // Check if its redy to score
     if (Math.abs(bot_pose_yaw) < LimelightConstants.rotationalTolerance
         && Math.abs(tx) < LimelightConstants.sidewaysTolerance && runningAverage.size() >= runningAverageSize
         && Math.abs(tz) < 1) {

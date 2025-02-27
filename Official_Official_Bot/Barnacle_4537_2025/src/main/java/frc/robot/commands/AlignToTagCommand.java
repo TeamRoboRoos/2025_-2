@@ -110,6 +110,7 @@ public class AlignToTagCommand extends Command {
     double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
     double bot_pose_yaw = last_bot_pose_yaw;
 
+    // If the limelight sees a tag, all is well, but if it doesnt, go at previous speed but slower
     if (limelight_tid > -1) {
       bot_pose_yaw = botpose_targetspace[4];
       last_bot_pose_yaw = bot_pose_yaw;
@@ -119,9 +120,10 @@ public class AlignToTagCommand extends Command {
     } else {
       tx = last_tx;
       sideways_velocity = (sidewaysPidController.calculate(tx, 0)) * 0.7;
-
     }
     SmartDashboard.putNumber("sideways_velocity", sideways_velocity);
+
+
     runningAverage.add(bot_pose_yaw);
     if (runningAverage.size() > runningAverageSize) {
       runningAverage.poll();
@@ -133,20 +135,6 @@ public class AlignToTagCommand extends Command {
     }
     bot_pose_yaw /= runningAverage.size();
 
-    ummeasureAngleAverage.add(Math.abs((NetworkTableInstance.getDefault().getTable("limelight-limey")
-        .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[4]));
-    if (ummeasureAngleAverage.size() > ummeasureAngleSize) {
-      ummeasureAngleAverage.poll();
-    }
-
-    double angle_thing = 0;
-    for (double val : ummeasureAngleAverage) {
-      angle_thing += val;
-    }
-    angle_thing /= ummeasureAngleAverage.size();
-
-    // The average of the last 20 angle measurements of the tag
-    SmartDashboard.putNumber("averaged_angle", angle_thing);
 
     SmartDashboard.putNumber("bot_pose_yaw", bot_pose_yaw);
 
