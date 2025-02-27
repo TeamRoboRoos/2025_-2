@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToTagCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -96,6 +97,9 @@ public class RobotContainer {
 
     m_driverController.y().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
     m_driverController.button(0).onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+  
+    m_driverController.povDownLeft().onTrue(new ClimbCommand());
+  
   }
 
   /**
