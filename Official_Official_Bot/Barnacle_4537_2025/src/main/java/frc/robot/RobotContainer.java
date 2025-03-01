@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -115,7 +117,8 @@ public class RobotContainer {
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.square()
             .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-    m_driverController.L1().onTrue(new InstantCommand(() ->new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1).set(DoubleSolenoid.Value.kForward)));m_driverController.L2().onTrue(new InstantCommand(() ->new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3).set(DoubleSolenoid.Value.kReverse)));
+    m_driverController.L1().onTrue(new InstantCommand(() ->new DoubleSolenoid(PneumaticsModuleType.REVPH, 15, 14).set(DoubleSolenoid.Value.kForward)));
+    m_driverController.R1().onTrue(new InstantCommand(() ->new DoubleSolenoid(PneumaticsModuleType.REVPH, 15, 14).set(DoubleSolenoid.Value.kReverse)));
   }
 
   /**
