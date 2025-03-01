@@ -21,7 +21,7 @@ public class AlgaeRemover extends SubsystemBase {
     deployerServo = new Servo(0);
     deployerServo.set(0.0); // TODO Check servo positions
 
-    algaeRemoverMotor = new SparkMax(19, MotorType.kBrushed); // TODO spark max ID
+    //algaeRemoverMotor = new SparkMax(19, MotorType.kBrushed); // TODO spark max ID
   }
 
   public Command deployAlgaeRemover() {
