@@ -9,11 +9,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LiftSubsystem extends SubsystemBase {
     private DoubleSolenoid liftSolenoid;
-    private Compressor compressor;
 
     public LiftSubsystem(){
         liftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 13, 12);
-        compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+        liftSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
     public Command toggleLiftState(){
         return runOnce(()->liftSolenoid.toggle());

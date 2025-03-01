@@ -9,12 +9,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
     private DoubleSolenoid climberSolenoid;
-    private Compressor compressor;
 
     public ClimberSubsystem(){
         climberSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 14, 15);
         climberSolenoid.set(DoubleSolenoid.Value.kReverse);
-        compressor = new Compressor(1, PneumaticsModuleType.REVPH);
     }
     public Command toggleClimberState(){
         return runOnce(()-> climberSolenoid.toggle());
