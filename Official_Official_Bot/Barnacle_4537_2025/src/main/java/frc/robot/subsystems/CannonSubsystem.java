@@ -29,7 +29,7 @@ public class CannonSubsystem extends SubsystemBase {
             }
             @Override
             public void execute(){
-                cannonMotor.set(0.5);
+                cannonMotor.set(0.75);
                 System.out.println("cannon running");
             }
             @Override
