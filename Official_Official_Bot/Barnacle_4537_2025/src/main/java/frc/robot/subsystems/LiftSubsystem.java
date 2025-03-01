@@ -13,7 +13,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     public LiftSubsystem(){
         liftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 13, 12);
-        compressor = new Compressor(0, PneumaticsModuleType.REVPH);
+        compressor = new Compressor(1, PneumaticsModuleType.REVPH);
     }
     public Command toggleLiftState(){
         return runOnce(()->liftSolenoid.toggle());

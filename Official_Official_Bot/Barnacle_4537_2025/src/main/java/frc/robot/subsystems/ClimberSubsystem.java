@@ -14,7 +14,7 @@ public class ClimberSubsystem extends SubsystemBase {
     public ClimberSubsystem(){
         climberSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 14, 15);
         climberSolenoid.set(DoubleSolenoid.Value.kReverse);
-        compressor = new Compressor(0, PneumaticsModuleType.REVPH);
+        compressor = new Compressor(1, PneumaticsModuleType.REVPH);
     }
     public Command toggleClimberState(){
         return runOnce(()-> climberSolenoid.toggle());
