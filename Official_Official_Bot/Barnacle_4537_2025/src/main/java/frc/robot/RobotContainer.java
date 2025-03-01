@@ -18,6 +18,7 @@ import frc.robot.commands.AlignToTagCommand;
 import frc.robot.commands.DriveWithAlignment;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -51,7 +52,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final CannonSubsystem m_cannonSubsystem = new CannonSubsystem();
   private final ClimberSubsystem m_climber = new ClimberSubsystem();
   private final LiftSubsystem m_lift = new LiftSubsystem();
 
@@ -123,6 +125,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
     m_driverController.L1().onTrue(m_climber.toggleClimberState());
     m_driverController.R1().onTrue(m_lift.toggleLiftState());
+    m_driverController.cross().onTrue(m_cannonSubsystem.runCannon());
   }
 
   /**
