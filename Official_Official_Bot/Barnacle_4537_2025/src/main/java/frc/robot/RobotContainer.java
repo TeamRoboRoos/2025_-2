@@ -19,7 +19,9 @@ import frc.robot.commands.DriveWithAlignment;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -50,6 +52,8 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  private final ClimberSubsystem m_climber = new ClimberSubsystem();
+  private final LiftSubsystem m_lift = new LiftSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS4Controller m_driverController = new CommandPS4Controller(
@@ -117,8 +121,8 @@ public class RobotContainer {
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.square()
             .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-    m_driverController.L1().onTrue(new InstantCommand(() ->new DoubleSolenoid(PneumaticsModuleType.REVPH, 15, 14).set(DoubleSolenoid.Value.kForward)));
-    m_driverController.R1().onTrue(new InstantCommand(() ->new DoubleSolenoid(PneumaticsModuleType.REVPH, 15, 14).set(DoubleSolenoid.Value.kReverse)));
+    m_driverController.L1().onTrue(m_climber.toggleClimberState());
+    m_driverController.R1().onTrue(m_lift.toggleLiftState());
   }
 
   /**
