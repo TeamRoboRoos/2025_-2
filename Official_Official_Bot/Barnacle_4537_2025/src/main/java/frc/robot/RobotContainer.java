@@ -5,6 +5,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,8 +18,11 @@ import frc.robot.commands.AlignToTagCommand;
 import frc.robot.commands.DriveWithAlignment;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -44,7 +52,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final CannonSubsystem m_cannonSubsystem = new CannonSubsystem();
+  private final ClimberSubsystem m_climber = new ClimberSubsystem();
+  private final LiftSubsystem m_lift = new LiftSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS4Controller m_driverController = new CommandPS4Controller(
@@ -63,17 +74,17 @@ public class RobotContainer {
   }
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> -m_driverController.getRawAxis(1),
-      () -> -m_driverController.getRawAxis(0))
-      .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
-      .deadband(OperatorConstants.DEADBAND)
-      .scaleTranslation(0.8);
+                  () -> -m_driverController.getRawAxis(1),
+                  () -> -m_driverController.getRawAxis(0))
+          .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8);
   // .allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
-      .withControllerHeadingAxis(() -> -m_driverController.getRawAxis(1),
-          () -> -m_driverController.getRawAxis(0))
-      .headingWhile(true);
+          .withControllerHeadingAxis(() -> -m_driverController.getRawAxis(1),
+                  () -> -m_driverController.getRawAxis(0))
+          .headingWhile(true);
 
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
 
@@ -97,7 +108,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+            .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
@@ -106,13 +117,15 @@ public class RobotContainer {
     m_driverController.L2().whileTrue(new DriveWithAlignment(drivebase));
     m_driverController.square().whileTrue(new TurnToAngleCommand(drivebase));
 
+    //m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
+    //m_driverController.square()
+    //    .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.square()
-        .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-    //m_driverController.y().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
-    //m_driverController.button(1).onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-    //m_driverController.button(2).whileTrue(drivebase.sysIdDriveMotorCommand());
-    //m_driverController.x().whileTrue(drivebase.sysIdAngleMotorCommand());
+            .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+    m_driverController.L1().onTrue(m_climber.toggleClimberState());
+    m_driverController.R1().onTrue(m_lift.toggleLiftState());
+    m_driverController.cross().onTrue(m_cannonSubsystem.runCannon());
   }
 
   /**
