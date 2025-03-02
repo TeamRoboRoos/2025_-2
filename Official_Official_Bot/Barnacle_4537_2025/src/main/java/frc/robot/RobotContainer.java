@@ -125,7 +125,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
     m_driverController.L1().onTrue(m_climber.toggleClimberState());
     m_driverController.R1().onTrue(m_lift.toggleLiftState());
-    m_driverController.cross().onTrue(m_cannonSubsystem.runCannon());
+    m_driverController.cross().whileTrue(m_cannonSubsystem.runCannon());
   }
 
   /**
