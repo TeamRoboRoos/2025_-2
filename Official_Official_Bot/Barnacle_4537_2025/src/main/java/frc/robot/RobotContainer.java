@@ -21,9 +21,11 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.subsystems.AlgaeRemover;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.PneumaticsHelper;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -33,6 +35,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -57,6 +60,8 @@ public class RobotContainer {
   protected final CannonSubsystem m_cannonSubsystem = new CannonSubsystem();
   private final ClimberSubsystem m_climber = new ClimberSubsystem();
   private final LiftSubsystem m_lift = new LiftSubsystem();
+  private final PneumaticsHelper pneumaticsHelper = new PneumaticsHelper();
+  private final AlgaeRemover m_AlgaeRemover = new AlgaeRemover();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS4Controller m_driverController = new CommandPS4Controller(
@@ -73,6 +78,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("armGoBrr", m_lift.toggleLiftState());
     NamedCommands.registerCommand("stopCannon", m_cannonSubsystem.runCannon());
     drivebase.setDefaultCommand(driveFieldOrientedDirectAngularVelocity);
+    CommandScheduler.getInstance().schedule(m_AlgaeRemover.deployAlgaeRemover());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
