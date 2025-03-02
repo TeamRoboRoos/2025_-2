@@ -9,6 +9,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -69,6 +70,8 @@ public class SwerveSubsystem extends SubsystemBase {
               Meter.of(4)),
               Rotation2d.fromDegrees(0)));
       swerveDrive.setHeadingCorrection(true);
+      swerveDrive.getSwerveController().setMaximumChassisAngularVelocity(Units.degreesToRadians(270));
+      swerveDrive.getSwerveController().addSlewRateLimiters(new SlewRateLimiter(1.2),new SlewRateLimiter(1.2),new SlewRateLimiter(Units.degreesToRadians(270)));
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
