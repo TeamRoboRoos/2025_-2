@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -68,6 +69,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    NamedCommands.registerCommand("cannonGoBrr", m_cannonSubsystem.runCannon());
+    NamedCommands.registerCommand("armGoBrr", m_lift.toggleLiftState());
+    NamedCommands.registerCommand("stopCannon", m_cannonSubsystem.runCannon());
     drivebase.setDefaultCommand(driveFieldOrientedDirectAngularVelocity);
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);

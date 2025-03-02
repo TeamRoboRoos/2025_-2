@@ -11,15 +11,81 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RedCenterAuto2"
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RedCenterAuto3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
           }
         },
         {
@@ -29,9 +95,45 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RedCenterAuto3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
           }
         }
       ]
