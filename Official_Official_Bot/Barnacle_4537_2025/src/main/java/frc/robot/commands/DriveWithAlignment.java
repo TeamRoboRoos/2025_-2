@@ -23,6 +23,7 @@ public class DriveWithAlignment extends Command {
   private boolean shouldFinish = false;
 
   private Queue<Double> runningAverage;
+  private Queue<Double> tyAverage;
   private Queue<Double> ummeasureAngleAverage;
 
   private double last_tx;
@@ -58,9 +59,15 @@ public class DriveWithAlignment extends Command {
     SmartDashboard.putNumber("threshold", 10);
     SmartDashboard.putNumber("multiplier", 20);
 
+    SmartDashboard.putNumber("RotTol", 5);
+    SmartDashboard.putNumber("SideTol", 5);
+    SmartDashboard.putNumber("ForTol", 5);
+
     SmartDashboard.putNumber("stage_2_sidetol", 5);
 
     runningAverage = new LinkedList<Double>();
+    
+    tyAverage = new LinkedList<Double>();
     ummeasureAngleAverage = new LinkedList<Double>();
     first_rotated = false;
 
@@ -82,6 +89,7 @@ public class DriveWithAlignment extends Command {
     .getInteger(0));
 
     runningAverage.clear();
+    tyAverage.clear();
     ummeasureAngleAverage.clear();
 
     shouldFinish = false;
@@ -140,6 +148,20 @@ public class DriveWithAlignment extends Command {
     }
     bot_pose_yaw /= runningAverage.size();
 
+
+    tyAverage.add(ty);
+    if (tyAverage.size() > 10) {
+      tyAverage.poll();
+    }
+
+    ty = 0;
+    for (double val : tyAverage) {
+      ty += val;
+    }
+    ty /= tyAverage.size();
+
+    SmartDashboard.putNumber("newTy", ty);
+
     SmartDashboard.putNumber("average yaw angle", bot_pose_yaw);
 
     // double sideways_velocity = tx * -1 * sideways_pid;
@@ -183,26 +205,28 @@ public class DriveWithAlignment extends Command {
 // If its not initially side ways aligned, align it. Then just drive since it will align itself. Only realign sideways
 // if it goes way off course
   
-  if (initial_sideways_alignment == false) {
-    swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-    if (Math.abs(tx) < SmartDashboard.getNumber("stage_2_sidetol", 5)) {
-      initial_sideways_alignment = true;
-    }
-  } else {
-    if(Math.abs(tx) < 10) {
-      swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, 0, 0));
-    } else {
-      swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-      initial_sideways_alignment = false;
-    }
-  }
+  // if (initial_sideways_alignment == false) {
+  //   swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+  //   if (Math.abs(tx) < SmartDashboard.getNumber("stage_2_sidetol", 5)) {
+  //     initial_sideways_alignment = true;
+  //   }
+  // } else {
+  //   if(Math.abs(tx) < 10) {
+  //     swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, 0, 0));
+  //   } else {
+  //     swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+  //     initial_sideways_alignment = false;
+  //   }
+  // }
+
+  swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, sideways_velocity, rotational_velocity));
 
   SmartDashboard.putBoolean("intial_sideways_alignment", initial_sideways_alignment);
 
     // Check if its redy to score
-    if (Math.abs(bot_pose_yaw) < LimelightConstants.rotationalTolerance
-        && Math.abs(tx) < LimelightConstants.sidewaysTolerance && runningAverage.size() >= runningAverageSize
-        && Math.abs(tz) < 1) {
+    if (Math.abs(bot_pose_yaw) < SmartDashboard.getNumber("RotTol", 5)
+        && Math.abs(tx) < SmartDashboard.getNumber("SideTol", 5) && runningAverage.size() >= runningAverageSize
+        && Math.abs(tz) < 1 && Math.abs(SmartDashboard.getNumber("newTy", 5)) < SmartDashboard.getNumber("ForTol", 5)){
 
       SmartDashboard.putBoolean("finished_alignment", true);
       System.out.println("DONE");
