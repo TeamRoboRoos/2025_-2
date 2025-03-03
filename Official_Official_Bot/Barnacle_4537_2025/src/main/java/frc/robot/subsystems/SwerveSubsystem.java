@@ -231,11 +231,10 @@ public class SwerveSubsystem extends SubsystemBase {
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic
               // drive trains
-              new PIDConstants(SmartDashboard.getNumber("AutoTransP", 0), SmartDashboard.getNumber("AutoTransI", 0),
-                  SmartDashboard.getNumber("AutoTransD", 0)),
+              new PIDConstants(1.5, 0, 0),
+              // SmartDashboard.getNumber("AutoTransD", 0)),
               // Translation PID constants
-              new PIDConstants(SmartDashboard.getNumber("AutoRotP", 0), SmartDashboard.getNumber("AutoRotI", 0),
-                  SmartDashboard.getNumber("AutoRotD", 0))
+              new PIDConstants(1, 0, 0)
           // Rotation PID constants
           ),
           config,
