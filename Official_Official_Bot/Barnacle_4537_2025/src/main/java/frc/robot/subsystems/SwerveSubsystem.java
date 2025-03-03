@@ -169,7 +169,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Gyro", inputModulus(getAHRSAngle().getDegrees(), -180, 180));
     posePublisher.set(swerveDrive.getPose());
-
+    System.out.println(getAHRSAngle().getDegrees());
   }
 
   @Override
@@ -225,7 +225,7 @@ public class SwerveSubsystem extends SubsystemBase {
                       // PPHolonomicController is the built in path following controller for holonomic drive trains
                       new PIDConstants(0.037272, 0.0, 0.0),
                       // Translation PID constants
-                      new PIDConstants(0.55, 0, 0.06)
+                      new PIDConstants(1.5, 0, 0.0)
                       // Rotation PID constants
               ),
               config,
@@ -269,7 +269,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Pose2d pose = swerveDrive.getPose();
     swerveDrive.resetOdometry(new Pose2d(pose.getX(), pose.getY(), angle));
 
-    getAHRS().setAngleAdjustment(0);
+    getAHRS().reset();
   }
   public static double inputModulus(double input, double minimumInput, double maximumInput) {
     double modulus = maximumInput - minimumInput;

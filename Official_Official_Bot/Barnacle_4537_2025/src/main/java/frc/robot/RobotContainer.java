@@ -140,13 +140,14 @@ public class RobotContainer {
     //m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     //m_driverController.square()
     //    .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-    m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
+    m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
     m_driverController.square()
             .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
     m_driverController.L1().onTrue(m_climber.toggleClimberState());
     m_driverController.R1().onTrue(m_lift.toggleLiftState());
     m_driverController.cross().onTrue(m_cannonSubsystem.runCannon());
     m_driverController.options().whileTrue(driveFieldOrientedPrecisionMode);
+    m_driverController.share().whileTrue(m_AlgaeRemover.runAlgaeRemoverMotor());
   }
 
   /**
