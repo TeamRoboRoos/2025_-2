@@ -5,6 +5,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,8 +18,11 @@ import frc.robot.commands.AlignToTagCommand;
 import frc.robot.commands.DriveWithAlignment;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -43,9 +51,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final SwerveSubsystem drivebase = new SwerveSubsystem();
+  protected final CannonSubsystem m_cannonSubsystem = new CannonSubsystem();
+  private final ClimberSubsystem m_climber = new ClimberSubsystem();
+  private final LiftSubsystem m_lift = new LiftSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS4Controller m_driverController = new CommandPS4Controller(
@@ -71,8 +81,8 @@ public class RobotContainer {
       .scaleTranslation(0.8);
 
   SwerveInputStream drivePrecisionMode = SwerveInputStream.of(drivebase.getSwerveDrive(),
-              () -> -m_driverController.getRawAxis(1) * 0.5,
-              () -> -m_driverController.getRawAxis(0) * 0.5)
+      () -> -m_driverController.getRawAxis(1) * 0.5,
+      () -> -m_driverController.getRawAxis(0) * 0.5)
       .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2) * 0.5)
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(0.8);
@@ -114,14 +124,22 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.R2().whileTrue(new AlignToTagCommand(drivebase));
     m_driverController.L2().whileTrue(new DriveWithAlignment(drivebase));
-    
+
     m_driverController.cross().whileTrue(new TurnToAngleCommand(drivebase));
 
     m_driverController.options().whileTrue(driveFieldOrientedPrecisionMode);
 
+    // m_driverController.triangle().onTrue(new InstantCommand(() ->
+    // drivebase.resetGyro(Rotation2d.fromRadians(0))));
+    // m_driverController.square()
+    // .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0,
+    // Rotation2d.fromDegrees(0)))));
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.square()
         .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+    m_driverController.L1().onTrue(m_climber.toggleClimberState());
+    m_driverController.R1().onTrue(m_lift.toggleLiftState());
+    m_driverController.cross().whileTrue(m_cannonSubsystem.runCannon());
   }
 
   /**
