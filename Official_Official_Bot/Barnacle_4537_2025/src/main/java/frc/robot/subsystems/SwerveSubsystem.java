@@ -16,6 +16,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.LimelightHelpers;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
+
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Meter;
 
@@ -65,6 +67,8 @@ public class SwerveSubsystem extends SubsystemBase {
               Meter.of(4)),
               Rotation2d.fromDegrees(0)));
       swerveDrive.setHeadingCorrection(false);
+      swerveDrive.getSwerveController().setMaximumChassisAngularVelocity(Units.degreesToRadians(270));
+      swerveDrive.getSwerveController().addSlewRateLimiters(new SlewRateLimiter(1.2),new SlewRateLimiter(1.2),new SlewRateLimiter(Units.degreesToRadians(270)));
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -150,10 +154,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
     if ((int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
         .getInteger(0) != -1) {
-      SmartDashboard.putBoolean("Aligned To Tag Angle", ((NetworkTableInstance.getDefault().getTable("limelight-limey")
-          .getEntry("camerapose_targetspace").getDoubleArray(new double[6]))[4]) < 1);
+      SmartDashboard.putBoolean("Aligned To Tag Angle", (Math.abs((NetworkTableInstance.getDefault().getTable("limelight-limey")
+          .getEntry("camerapose_targetspace").getDoubleArray(new double[6]))[4])) < 1);
+      SmartDashboard.putBoolean("Rotationally Aligned", (Math.abs((NetworkTableInstance.getDefault().getTable("limelight-limey")
+      .getEntry("camerapose_targetspace").getDoubleArray(new double[6]))[4])) < SmartDashboard.getNumber("RotTol", 5));
+      SmartDashboard.putBoolean("Sideways Aligned", Math.abs(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0)) > SmartDashboard.getNumber("SideTol", 5));
       SmartDashboard.putBoolean("Ready To Score", ((NetworkTableInstance.getDefault().getTable("limelight-limey")
           .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[2]) > -0.5);
+      SmartDashboard.putNumber("primaryTag!", (int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
+      .getInteger(0));
 
     } else {
       SmartDashboard.putBoolean("Aligned To Tag Angle", false);
@@ -260,7 +269,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Pose2d pose = swerveDrive.getPose();
     swerveDrive.resetOdometry(new Pose2d(pose.getX(), pose.getY(), angle));
 
-    getAHRS().setAngleAdjustment(0);
+    getAHRS().reset();
   }
   public static double inputModulus(double input, double minimumInput, double maximumInput) {
     double modulus = maximumInput - minimumInput;

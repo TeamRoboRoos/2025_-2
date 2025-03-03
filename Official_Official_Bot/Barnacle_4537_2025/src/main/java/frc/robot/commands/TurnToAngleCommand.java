@@ -22,7 +22,7 @@ public class TurnToAngleCommand extends Command {
 
   private PIDController turningPidController;
 
-  private int[] AprilTags = { -135, 135, 90, 0, 0, 45, 0, -45, -135, 180, 135 };
+  private int[] AprilTags = { -135, 135, 90, 0, 0, 45, 0, 0, -135, 180, 135 };
 
   private boolean shouldFinish = false;
 
@@ -35,9 +35,10 @@ public class TurnToAngleCommand extends Command {
     addRequirements(swerve);
 
     SmartDashboard.putNumber("turningP", 0.06);
-    SmartDashboard.putNumber("turningI", 0.06);
-    SmartDashboard.putNumber("turningD", 0.06);
+    SmartDashboard.putNumber("turningI", 0.00);
+    SmartDashboard.putNumber("turningD", 0.00);
     SmartDashboard.putBoolean("runningCommand", false);
+
 
     turningPidController = new PIDController(0.06, 0, 0);
 
@@ -47,13 +48,13 @@ public class TurnToAngleCommand extends Command {
   @Override
   public void initialize() {
     tid = -1;
-    tid = (int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
-        .getInteger(0);
+    tid = (int) SmartDashboard.getNumber("primaryTag!", 0);
     
 
     shouldFinish = false;
     if (tid == -1) {
       shouldFinish = true;
+
     }
     SmartDashboard.putNumber("chosen_id", tid);
 
@@ -71,10 +72,14 @@ public class TurnToAngleCommand extends Command {
 
     double rotational_velocity = turningPidController.calculate(SmartDashboard.getNumber("Gyro", 0), desired_angle);
 
-    swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
+    
+    SmartDashboard.putNumber("desired_angle", desired_angle);
 
-    if ((desired_angle - 5) < SmartDashboard.getNumber("Gyro", 0)
-        && SmartDashboard.getNumber("Gyro", 0) < (desired_angle + 5)) {
+
+    swerve.driveRobotOriented(new ChassisSpeeds(0, 0, -rotational_velocity));
+
+    if ((desired_angle - 5) < SmartDashboard.getNumber("Gyro", 0) + 0
+        && SmartDashboard.getNumber("Gyro", 0) + 0 < (desired_angle + 5)) {
       shouldFinish = true;
     }
 

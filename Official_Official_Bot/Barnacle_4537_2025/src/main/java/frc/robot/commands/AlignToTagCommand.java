@@ -33,11 +33,14 @@ public class AlignToTagCommand extends Command {
   private double last_tx;
   private double last_bot_pose_yaw;
 
+  private boolean first_sideways_alignment = false;
+
   private double count = 0;
 
   private boolean first_rotated = false;
 
-  private static final int runningAverageSize = 30;
+  private static final int runningAverageSize = 5;
+
 
   private static final int ummeasureAngleSize = 10;
 
@@ -46,6 +49,12 @@ public class AlignToTagCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerve = swerve;
     addRequirements(swerve);
+
+    SmartDashboard.putBoolean("just rotational", true);
+
+    SmartDashboard.putBoolean("first_sideways_alignment", first_sideways_alignment);
+
+    SmartDashboard.putBoolean("sideways mode", true);
 
     SmartDashboard.putNumber("limeySideP", 0.06);
     SmartDashboard.putNumber("limeyRotP", 0.03);
@@ -56,7 +65,12 @@ public class AlignToTagCommand extends Command {
     SmartDashboard.putNumber("threshold", 10);
     SmartDashboard.putNumber("angle_threshold", 10);
 
+    SmartDashboard.putNumber("SideTol", 5);
+    SmartDashboard.putNumber("RotTol", 5);
+
     SmartDashboard.putNumber("Close_Rot_P", 10);
+
+    SmartDashboard.putNumber("divisor for cant see speed", 0.7);
 
     runningAverage = new LinkedList<Double>();
     ummeasureAngleAverage = new LinkedList<Double>();
@@ -64,6 +78,8 @@ public class AlignToTagCommand extends Command {
 
     sidewaysPidController = new PIDController(0.06, 0, 0);
     rotationaPidController = new PIDController(0.03, 0, 0);
+
+    first_sideways_alignment = false;
 
   }
 
@@ -110,6 +126,7 @@ public class AlignToTagCommand extends Command {
     double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
     double bot_pose_yaw = last_bot_pose_yaw;
 
+    // If the limelight sees a tag, all is well, but if it doesnt, go at previous speed but slower
     if (limelight_tid > -1) {
       bot_pose_yaw = botpose_targetspace[4];
       last_bot_pose_yaw = bot_pose_yaw;
@@ -118,10 +135,14 @@ public class AlignToTagCommand extends Command {
 
     } else {
       tx = last_tx;
-      sideways_velocity = (sidewaysPidController.calculate(tx, 0)) * 0.7;
-
+      sideways_velocity = (sidewaysPidController.calculate(tx, 0)) * SmartDashboard.getNumber("divisor for cant see speed", 0.7);
     }
+
+
+
     SmartDashboard.putNumber("sideways_velocity", sideways_velocity);
+
+
     runningAverage.add(bot_pose_yaw);
     if (runningAverage.size() > runningAverageSize) {
       runningAverage.poll();
@@ -133,20 +154,6 @@ public class AlignToTagCommand extends Command {
     }
     bot_pose_yaw /= runningAverage.size();
 
-    ummeasureAngleAverage.add(Math.abs((NetworkTableInstance.getDefault().getTable("limelight-limey")
-        .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[4]));
-    if (ummeasureAngleAverage.size() > ummeasureAngleSize) {
-      ummeasureAngleAverage.poll();
-    }
-
-    double angle_thing = 0;
-    for (double val : ummeasureAngleAverage) {
-      angle_thing += val;
-    }
-    angle_thing /= ummeasureAngleAverage.size();
-
-    // The average of the last 20 angle measurements of the tag
-    SmartDashboard.putNumber("averaged_angle", angle_thing);
 
     SmartDashboard.putNumber("bot_pose_yaw", bot_pose_yaw);
 
@@ -183,27 +190,64 @@ public class AlignToTagCommand extends Command {
     // count = 0;
     // }
     // SmartDashboard.putNumber("COUNT", count);
-    double angle_threshold = SmartDashboard.getNumber("angle_threshold", 1);
-    count += 1;
-    System.out.println(count);
 
-    if (count > threshold) {
+
+
+    // double angle_threshold = SmartDashboard.getNumber("angle_threshold", 1);
+    // count += 1;
+    // System.out.println(count);
+
+    // if (count > threshold) {
+    //   swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    // } else {
+
+    //   swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
+    //   if (angle_threshold > Math.abs(SmartDashboard.getNumber("something2", 100))) {
+    //     System.out.println("HAPPY");
+    //     SmartDashboard.putBoolean("fr alinged?", true);
+    //     count += threshold;
+    //   } else {
+
+    //     SmartDashboard.putBoolean("fr alinged?", false);
+    //   }
+    // }
+
+    if (first_sideways_alignment == false) {
       swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+      if (Math.abs(tx) < 5) {
+        first_sideways_alignment = true;
+      }
     } else {
-
-      swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
-      if (angle_threshold > Math.abs(SmartDashboard.getNumber("something2", 100))) {
-        System.out.println("HAPPY");
-        SmartDashboard.putBoolean("fr alinged?", true);
-        count += threshold;
+      if(Math.abs(tx) < 10) {
+        swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
       } else {
-
-        SmartDashboard.putBoolean("fr alinged?", false);
+        swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+        first_sideways_alignment = false;
       }
     }
 
-    if (Math.abs(bot_pose_yaw) < LimelightConstants.rotationalTolerance
-        && Math.abs(tx) < LimelightConstants.sidewaysTolerance && runningAverage.size() >= runningAverageSize) {
+    SmartDashboard.putBoolean("first_sideways_alignment", first_sideways_alignment);
+
+    // if (Math.abs(tx) < threshold-5) {
+      
+    //   if (SmartDashboard.getBoolean("just rotational", true)) {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
+    //   } else {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, rotational_velocity));
+    //   }swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    //   threshold += 5;
+    //   SmartDashboard.putBoolean("sideways mode", false);
+    // } else {
+
+    //   if (SmartDashboard.getBoolean("just rotational", true)) {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
+    //   } else {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, rotational_velocity));
+    //   }
+    // }
+
+    if (Math.abs(bot_pose_yaw) < SmartDashboard.getNumber("RotTol", 5)
+        && Math.abs(tx) < SmartDashboard.getNumber("SideTol", 5) && runningAverage.size() >= runningAverageSize) {
 
       SmartDashboard.putBoolean("finished_alignment", true);
       System.out.println("DONE");

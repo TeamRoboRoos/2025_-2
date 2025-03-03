@@ -81,21 +81,30 @@ public class RobotContainer {
   }
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                  () -> -m_driverController.getRawAxis(1),
-                  () -> -m_driverController.getRawAxis(0))
-          .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(0.8);
+      () -> -m_driverController.getRawAxis(1),
+      () -> -m_driverController.getRawAxis(0))
+      .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
+      .deadband(OperatorConstants.DEADBAND)
+      .scaleTranslation(0.8);
+
+  SwerveInputStream drivePrecisionMode = SwerveInputStream.of(drivebase.getSwerveDrive(),
+      () -> -m_driverController.getRawAxis(1) * 0.5,
+      () -> -m_driverController.getRawAxis(0) * 0.5)
+      .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2) * 0.5)
+      .deadband(OperatorConstants.DEADBAND)
+      .scaleTranslation(0.8);
   // .allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
-          .withControllerHeadingAxis(() -> -m_driverController.getRawAxis(1),
-                  () -> -m_driverController.getRawAxis(0))
-          .headingWhile(true);
+      .withControllerHeadingAxis(() -> -m_driverController.getRawAxis(1),
+          () -> -m_driverController.getRawAxis(0))
+      .headingWhile(true);
 
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
 
   Command driveFieldOrientedDirectAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+
+  Command driveFieldOrientedPrecisionMode = drivebase.driveFieldOriented(drivePrecisionMode);
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
@@ -115,24 +124,30 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
-            .onTrue(new ExampleCommand(m_exampleSubsystem));
+        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
     m_driverController.R2().whileTrue(new AlignToTagCommand(drivebase));
     m_driverController.L2().whileTrue(new DriveWithAlignment(drivebase));
-    m_driverController.square().whileTrue(new TurnToAngleCommand(drivebase));
 
-    //m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
-    //m_driverController.square()
-    //    .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+    m_driverController.cross().whileTrue(new TurnToAngleCommand(drivebase));
+
+    m_driverController.options().whileTrue(driveFieldOrientedPrecisionMode);
+
+    // m_driverController.triangle().onTrue(new InstantCommand(() ->
+    // drivebase.resetGyro(Rotation2d.fromRadians(0))));
+    // m_driverController.square()
+    // .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0,
+    // Rotation2d.fromDegrees(0)))));
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.square()
-            .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
     m_driverController.L1().onTrue(m_climber.toggleClimberState());
     m_driverController.R1().onTrue(m_lift.toggleLiftState());
-    m_driverController.cross().whileTrue(m_cannonSubsystem.runCannon());
+    m_driverController.share().whileTrue(m_cannonSubsystem.runCannon());
+    //m_driverController.cross().whileTrue(m_cannonSubsystem.runCannon());
     //m_driverController.povUp().whileTrue(m_AlgaeRemover.runAlgaeRemoverMotor());
   }
 
