@@ -11,6 +11,30 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BlueRightAuto2"
@@ -23,6 +47,30 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BlueCenterAuto4"
@@ -32,6 +80,30 @@
           "type": "path",
           "data": {
             "pathName": "BlueCenterAuto3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armGoBrr"
           }
         }
       ]

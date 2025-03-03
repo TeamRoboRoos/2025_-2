@@ -1,57 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="Barnacle_4537_2025:main" external.linked.project.path="$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025" external.root.project.path="$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025" external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025/build/generated/sources/annotationProcessor/java/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
+    </content>
+  </component>
   <component name="FacetManager">
     <facet external-system-id="GRADLE" type="FRC_FACET" name="FRC">
       <configuration />
     </facet>
-  </component>
-  <component name="NewModuleRootManager">
-    <output url="file://$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025/build/classes/java/main" />
-    <exclude-output />
-    <content url="file://$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025/build/generated/sources/annotationProcessor/java/main">
-      <sourceFolder url="file://$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025/src/main">
-      <sourceFolder url="file://$MODULE_DIR$/../../Official_Official_Bot/Barnacle_4537_2025/src/main/java" isTestSource="false" />
-    </content>
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibj:wpilibj-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpinet:wpinet-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.apriltag:apriltag-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiunits:wpiunits-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.epilogue:epilogue-runtime-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:4.10.0-3" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-simple:0.43.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.15.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.15.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.15.2" level="project" />
-    <orderEntry type="library" name="Gradle: us.hebi.quickbuf:quickbuf-runtime:1.3.3" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2025.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.reduxrobotics.frc:ReduxLib-java:2025.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.pathplanner.lib:PathplannerLib-java:2025.2.3" level="project" />
-    <orderEntry type="library" name="Gradle: swervelib:YAGSL-java:2025.2.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.revrobotics.frc:REVLib-java:2025.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.thethriftybot.frc:ThriftyLib-java:2025.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.ctre.phoenix:api-java:5.35.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.ctre.phoenix:wpiapi-java:5.35.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ironmaple:maplesim-java:0.3.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.dyn4j:dyn4j:5.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.studica.frc:Studica-java:2025.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.littletonrobotics.akit:akit-java:4.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.ctre.phoenix6:wpiapi-java:25.2.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-fsparse:0.43.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-fdense:0.43.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-dsparse:0.43.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-ddense:0.43.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-cdense:0.43.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-zdense:0.43.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.ejml:ejml-core:0.43.1" level="project" />
   </component>
 </module>

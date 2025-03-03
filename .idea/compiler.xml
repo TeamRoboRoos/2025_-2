@@ -11,5 +11,6 @@
         <module name="Barnacle_4537_2025.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="17" />
   </component>
 </project>
