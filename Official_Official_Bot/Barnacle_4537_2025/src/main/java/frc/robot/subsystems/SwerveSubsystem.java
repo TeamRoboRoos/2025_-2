@@ -51,6 +51,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private Queue<Double> runningAverage;
 
+
   private double last_bot_pose_yaw;
   private double bot_pose_yaw;
 
@@ -63,6 +64,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     runningAverage = new LinkedList<Double>();
+
+
+    SmartDashboard.putNumber("AutoTransP", 0.037272);
+    SmartDashboard.putNumber("AutoTransI", 0);
+    SmartDashboard.putNumber("AutoTransD", 0);
+    SmartDashboard.putNumber("AutoRotP", 2.25);
+    SmartDashboard.putNumber("AutoRotI", 0);
+    SmartDashboard.putNumber("AutoRotD", 0);
 
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.SwerveConstants.maxSpeed,
@@ -113,6 +122,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
+    
+
+
 
     SmartDashboard.putNumber("tz", (NetworkTableInstance.getDefault().getTable("limelight-limey")
         .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[2]);
@@ -133,7 +146,19 @@ public class SwerveSubsystem extends SubsystemBase {
       // SmartDashboard.putBoolean(swerveModule.moduleNumber + " absolute encoder
       // offset?", swerveModule.getAbsoluteEncoder().setAbsoluteEncoderOffset(
       // 34.892578));
+
+
+
+
+
+
+    
+
     }
+
+
+
+
     double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
     double bot_pose_yaw = last_bot_pose_yaw;
     if ((int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
@@ -223,9 +248,9 @@ public class SwerveSubsystem extends SubsystemBase {
               // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
               new PPHolonomicDriveController(
                       // PPHolonomicController is the built in path following controller for holonomic drive trains
-                      new PIDConstants(0.037272, 0.0, 0.0),
+                      new PIDConstants(SmartDashboard.getNumber("AutoTransP", 0), SmartDashboard.getNumber("AutoTransI", 0), SmartDashboard.getNumber("AutoTransD", 0)),
                       // Translation PID constants
-                      new PIDConstants(2.25, 0, 0.0)
+                      new PIDConstants(SmartDashboard.getNumber("AutoRotP", 0), SmartDashboard.getNumber("AutoRotI", 0), SmartDashboard.getNumber("AutoRotD", 0))
                       // Rotation PID constants
               ),
               config,
