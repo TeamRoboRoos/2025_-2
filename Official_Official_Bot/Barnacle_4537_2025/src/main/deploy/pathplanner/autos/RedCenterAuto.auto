@@ -13,25 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "armGoBrr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "cannonGoBrr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopCannon"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "armGoBrr"
           }
         },
         {
@@ -55,25 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "armGoBrr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "cannonGoBrr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopCannon"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "armGoBrr"
           }
         },
         {
@@ -97,25 +61,7 @@
         {
           "type": "named",
           "data": {
-            "name": "armGoBrr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "cannonGoBrr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopCannon"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "armGoBrr"
           }
         }
       ]
