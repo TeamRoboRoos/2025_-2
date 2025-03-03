@@ -25,11 +25,11 @@ public class AlgaeRemover extends SubsystemBase {
   }
 
   public Command deployAlgaeRemover() {
-    return runOnce(() -> deployerServo.set(0.8));
+    return runOnce(() -> deployerServo.set(0.4));
   }
 
   public Command runAlgaeRemoverMotor() {
-    return runEnd(() -> algaeRemoverMotor.set(0.5), () -> algaeRemoverMotor.set(0.0));
+    return runEnd(() -> algaeRemoverMotor.set(1), () -> algaeRemoverMotor.set(0.0));
   }
 
   @Override

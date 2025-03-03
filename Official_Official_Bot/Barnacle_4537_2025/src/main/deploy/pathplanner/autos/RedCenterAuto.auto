@@ -17,6 +17,18 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RedCenterAuto2"

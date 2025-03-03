@@ -67,6 +67,8 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS4Controller m_driverController = new CommandPS4Controller(
       OperatorConstants.kDriverControllerPort);
+  private final CommandPS4Controller m_OperatorController = new CommandPS4Controller(
+      OperatorConstants.kOperatorControllerPort);
   private final SendableChooser<Command> autoChooser;
 
   /**
@@ -78,6 +80,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("cannonGoBrr", m_cannonSubsystem.runCannon());
     NamedCommands.registerCommand("armGoBrr", m_lift.toggleLiftState());
     NamedCommands.registerCommand("stopCannon", m_cannonSubsystem.runCannon());
+    NamedCommands.registerCommand("deploy", m_AlgaeRemover.deployAlgaeRemover());
+    NamedCommands.registerCommand("algaeGoBrr", m_AlgaeRemover.runAlgaeRemoverMotor());
     drivebase.setDefaultCommand(driveFieldOrientedDirectAngularVelocity);
     CommandScheduler.getInstance().schedule(m_AlgaeRemover.deployAlgaeRemover());
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -134,31 +138,35 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    m_driverController.R2().whileTrue(new AlignToTagCommand(drivebase));
-    m_driverController.L2().whileTrue(new DriveWithAlignment(drivebase));
+    m_driverController.R1().whileTrue(new AlignToTagCommand(drivebase));
+    m_driverController.R2().whileTrue(new DriveWithAlignment(drivebase));
 
     m_driverController.cross().whileTrue(new TurnToAngleCommand(drivebase));
 
-    m_driverController.options().whileTrue(driveFieldOrientedPrecisionMode);
 
     // m_driverController.triangle().onTrue(new InstantCommand(() ->
     // drivebase.resetGyro(Rotation2d.fromRadians(0))));
     // m_driverController.square()
     // .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0,
     // Rotation2d.fromDegrees(0)))));
-    m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     //m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     //m_driverController.square()
     //    .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
-    m_driverController.square()
-        .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-    m_driverController.L1().onTrue(m_climber.toggleClimberState());
-    m_driverController.R1().onTrue(m_lift.toggleLiftState());
-    m_driverController.cross().onTrue(m_cannonSubsystem.runCannon());
-    m_driverController.options().whileTrue(driveFieldOrientedPrecisionMode);
-    m_driverController.share().whileTrue(m_AlgaeRemover.runAlgaeRemoverMotor());
-    m_driverController.share().whileTrue(m_cannonSubsystem.runCannon());
+
+    m_OperatorController.povDown().onTrue(m_climber.toggleClimberState());
+
+
+    m_OperatorController.R1().onTrue(m_lift.toggleLiftState());
+
+    \[]
+    \[]
+    m_driverController.L2().whileTrue(driveFieldOrientedPrecisionMode);
+
+
+    m_OperatorController.L1().whileTrue(m_AlgaeRemover.runAlgaeRemoverMotor());
+    m_OperatorController.R2().whileTrue(m_cannonSubsystem.runCannon());
+    \[]
     //m_driverController.cross().whileTrue(m_cannonSubsystem.runCannon());
     //m_driverController.povUp().whileTrue(m_AlgaeRemover.runAlgaeRemoverMotor());
   }

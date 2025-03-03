@@ -65,6 +65,8 @@ public class AlignToTagCommand extends Command {
     SmartDashboard.putNumber("threshold", 10);
     SmartDashboard.putNumber("angle_threshold", 10);
 
+    SmartDashboard.putNumber("closeV", 1);
+
     SmartDashboard.putNumber("SideTol", 5);
     SmartDashboard.putNumber("RotTol", 5);
 
@@ -212,21 +214,23 @@ public class AlignToTagCommand extends Command {
     //   }
     // }
 
-    if (first_sideways_alignment == false) {
-      swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-      if (Math.abs(tx) < 5) {
-        first_sideways_alignment = true;
-      }
-    } else {
-      if(Math.abs(tx) < 10) {
-        swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
-      } else {
-        swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-        first_sideways_alignment = false;
-      }
-    }
+    // if (first_sideways_alignment == false) {
+    //   swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    //   if (Math.abs(tx) < 5) {
+    //     first_sideways_alignment = true;
+    //   }
+    // } else {
+    //   if(Math.abs(tx) < 10) {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(0, 0, rotational_velocity));
+    //   } else {
+    //     swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
+    //     first_sideways_alignment = false;
+    //   }
+    // }
 
     SmartDashboard.putBoolean("first_sideways_alignment", first_sideways_alignment);
+
+    swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity*SmartDashboard.getNumber("closeV", 1), 0));
 
     // if (Math.abs(tx) < threshold-5) {
       

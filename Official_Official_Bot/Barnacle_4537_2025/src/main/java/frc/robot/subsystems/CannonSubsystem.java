@@ -17,7 +17,7 @@ public class CannonSubsystem extends SubsystemBase {
         cannonTimer.reset();
     }
     public Command runCannon(){
-        return new StartEndCommand(() -> cannonMotor.set(1), () -> cannonMotor.set(0), this);
+        return new StartEndCommand(() -> cannonMotor.set(1), () -> cannonMotor.set(0), this).withTimeout(1);
     };
 
 }
