@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -74,6 +75,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    NamedCommands.registerCommand("cannonGoBrr", m_cannonSubsystem.runCannon());
+    NamedCommands.registerCommand("armGoBrr", m_lift.toggleLiftState());
+    NamedCommands.registerCommand("stopCannon", m_cannonSubsystem.runCannon());
     drivebase.setDefaultCommand(driveFieldOrientedDirectAngularVelocity);
     CommandScheduler.getInstance().schedule(m_AlgaeRemover.deployAlgaeRemover());
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -81,18 +85,19 @@ public class RobotContainer {
   }
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> -m_driverController.getRawAxis(1),
-      () -> -m_driverController.getRawAxis(0))
-      .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
-      .deadband(OperatorConstants.DEADBAND)
-      .scaleTranslation(0.8);
+                  () -> -m_driverController.getRawAxis(1),
+                  () -> -m_driverController.getRawAxis(0))
+          .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8);
 
   SwerveInputStream drivePrecisionMode = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> -m_driverController.getRawAxis(1) * 0.5,
-      () -> -m_driverController.getRawAxis(0) * 0.5)
-      .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2) * 0.5)
-      .deadband(OperatorConstants.DEADBAND)
-      .scaleTranslation(0.8);
+                  () -> -m_driverController.getRawAxis(1) * 0.5,
+                  () -> -m_driverController.getRawAxis(0) * 0.5)
+          .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2) * 0.5)
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8);
+
   // .allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -142,10 +147,17 @@ public class RobotContainer {
     // .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0,
     // Rotation2d.fromDegrees(0)))));
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
+    //m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
+    //m_driverController.square()
+    //    .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+    m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
     m_driverController.square()
         .onTrue(new InstantCommand(() -> drivebase.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
     m_driverController.L1().onTrue(m_climber.toggleClimberState());
     m_driverController.R1().onTrue(m_lift.toggleLiftState());
+    m_driverController.cross().onTrue(m_cannonSubsystem.runCannon());
+    m_driverController.options().whileTrue(driveFieldOrientedPrecisionMode);
+    m_driverController.share().whileTrue(m_AlgaeRemover.runAlgaeRemoverMotor());
     m_driverController.share().whileTrue(m_cannonSubsystem.runCannon());
     //m_driverController.cross().whileTrue(m_cannonSubsystem.runCannon());
     //m_driverController.povUp().whileTrue(m_AlgaeRemover.runAlgaeRemoverMotor());
@@ -160,5 +172,7 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
-
+  public SwerveSubsystem getDrivebase(){
+    return drivebase;
+  }
 }

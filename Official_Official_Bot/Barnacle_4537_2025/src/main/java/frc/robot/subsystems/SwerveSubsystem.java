@@ -9,13 +9,16 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.LimelightHelpers;
 
+import static edu.wpi.first.math.MathUtil.inputModulus;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 
 import static edu.wpi.first.units.Units.Degree;
@@ -30,6 +33,7 @@ import com.studica.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import swervelib.SwerveDriveTest;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
@@ -69,6 +73,10 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.setHeadingCorrection(false);
       swerveDrive.getSwerveController().setMaximumChassisAngularVelocity(Units.degreesToRadians(270));
       swerveDrive.getSwerveController().addSlewRateLimiters(new SlewRateLimiter(1.2),new SlewRateLimiter(1.2),new SlewRateLimiter(Units.degreesToRadians(270)));
+      swerveDrive.setHeadingCorrection(true);
+      swerveDrive.getSwerveController().setMaximumChassisAngularVelocity(Units.degreesToRadians(270));
+      swerveDrive.getSwerveController().addSlewRateLimiters(new SlewRateLimiter(1.2), new SlewRateLimiter(1.2),
+          new SlewRateLimiter(Units.degreesToRadians(270)));
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -130,7 +138,9 @@ public class SwerveSubsystem extends SubsystemBase {
       // SmartDashboard.putBoolean(swerveModule.moduleNumber + " absolute encoder
       // offset?", swerveModule.getAbsoluteEncoder().setAbsoluteEncoderOffset(
       // 34.892578));
+
     }
+
     double[] botpose_targetspace = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.limelightName);
     double bot_pose_yaw = last_bot_pose_yaw;
     if ((int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
@@ -171,7 +181,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Gyro", inputModulus(getAHRSAngle().getDegrees(), -180, 180));
     posePublisher.set(swerveDrive.getPose());
-
+    System.out.println(getAHRSAngle().getDegrees());
   }
 
   @Override
@@ -191,7 +201,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
     return run(() -> {
       swerveDrive.driveFieldOriented(velocity.get());
-      
+
     });
   }
 
@@ -224,9 +234,10 @@ public class SwerveSubsystem extends SubsystemBase {
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic
               // drive trains
-              new PIDConstants(0.0034645, 0.004, 0.0),
+              new PIDConstants(1.5, 0, 0),
+              // SmartDashboard.getNumber("AutoTransD", 0)),
               // Translation PID constants
-              new PIDConstants(4.5, 0, 0.01)
+              new PIDConstants(1, 0, 0)
           // Rotation PID constants
           ),
           config,
@@ -271,6 +282,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     getAHRS().reset();
   }
+
   public static double inputModulus(double input, double minimumInput, double maximumInput) {
     double modulus = maximumInput - minimumInput;
 
@@ -278,7 +290,7 @@ public class SwerveSubsystem extends SubsystemBase {
     int numMax = (int) ((input - minimumInput) / modulus);
     input -= numMax * modulus;
 
-     // Wrap input if it's below the minimum input
+    // Wrap input if it's below the minimum input
     int numMin = (int) ((input - maximumInput) / modulus);
     input -= numMin * modulus;
 
@@ -292,12 +304,12 @@ public class SwerveSubsystem extends SubsystemBase {
     if (gyro < 0) {
       getAHRS().setAngleAdjustment(-gyro);
       // if (Math.abs(getAHRSAngle().getDegrees()) > 180) {
-      //   getAHRS().setAngleAdjustment(-(getAHRSAngle().getDegrees()%180));
-      // } 
-    // } else if (gyro > 0) {
-    //   if (Math.abs(getAHRSAngle().getDegrees()) > 180) {
-    //     getAHRS().setAngleAdjustment(-(getAHRSAngle().getDegrees()%180));
-    //   } 
+      // getAHRS().setAngleAdjustment(-(getAHRSAngle().getDegrees()%180));
+      // }
+      // } else if (gyro > 0) {
+      // if (Math.abs(getAHRSAngle().getDegrees()) > 180) {
+      // getAHRS().setAngleAdjustment(-(getAHRSAngle().getDegrees()%180));
+      // }
     }
 
   }
@@ -308,7 +320,7 @@ public class SwerveSubsystem extends SubsystemBase {
   // Rotation3d(angle)));
   public void driveRobotOriented(ChassisSpeeds velocity) {
     swerveDrive.drive(velocity);
-    
+
   }
 
   public void resetPose(Pose2d pose) {

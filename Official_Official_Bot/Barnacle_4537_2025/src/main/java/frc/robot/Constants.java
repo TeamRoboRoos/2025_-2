@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -36,5 +38,9 @@ public final class Constants {
     public static final double rotationalTolerance = 5;
     public static final double sidewaysTolerance = 5;
 
+  }
+  public static final class ShuffleboardTabs {
+
+    public static final ShuffleboardTab AUTONOMOUS = Shuffleboard.getTab("Autonomous");
   }
 }
