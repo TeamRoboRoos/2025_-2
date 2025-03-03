@@ -58,6 +58,8 @@ public class DriveWithAlignment extends Command {
     SmartDashboard.putNumber("threshold", 10);
     SmartDashboard.putNumber("multiplier", 20);
 
+    SmartDashboard.putNumber("stage_2_sidetol", 5);
+
     runningAverage = new LinkedList<Double>();
     ummeasureAngleAverage = new LinkedList<Double>();
     first_rotated = false;
@@ -183,7 +185,7 @@ public class DriveWithAlignment extends Command {
   
   if (initial_sideways_alignment == false) {
     swerve.driveRobotOriented(new ChassisSpeeds(0, sideways_velocity, 0));
-    if (Math.abs(tx) < 5) {
+    if (Math.abs(tx) < SmartDashboard.getNumber("stage_2_sidetol", 5)) {
       initial_sideways_alignment = true;
     }
   } else {
@@ -194,6 +196,8 @@ public class DriveWithAlignment extends Command {
       initial_sideways_alignment = false;
     }
   }
+
+  SmartDashboard.putBoolean("intial_sideways_alignment", initial_sideways_alignment);
 
     // Check if its redy to score
     if (Math.abs(bot_pose_yaw) < LimelightConstants.rotationalTolerance

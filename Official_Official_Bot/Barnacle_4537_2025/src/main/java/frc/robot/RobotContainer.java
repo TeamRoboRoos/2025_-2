@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
 
@@ -68,6 +69,13 @@ public class RobotContainer {
       .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2))
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(0.8);
+
+  SwerveInputStream drivePrecisionMode = SwerveInputStream.of(drivebase.getSwerveDrive(),
+              () -> -m_driverController.getRawAxis(1) * 0.5,
+              () -> -m_driverController.getRawAxis(0) * 0.5)
+      .withControllerRotationAxis(() -> -m_driverController.getRawAxis(2) * 0.5)
+      .deadband(OperatorConstants.DEADBAND)
+      .scaleTranslation(0.8);
   // .allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -78,6 +86,8 @@ public class RobotContainer {
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
 
   Command driveFieldOrientedDirectAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+
+  Command driveFieldOrientedPrecisionMode = drivebase.driveFieldOriented(drivePrecisionMode);
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
@@ -104,7 +114,10 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.R2().whileTrue(new AlignToTagCommand(drivebase));
     m_driverController.L2().whileTrue(new DriveWithAlignment(drivebase));
-    m_driverController.square().whileTrue(new TurnToAngleCommand(drivebase));
+    
+    m_driverController.cross().whileTrue(new TurnToAngleCommand(drivebase));
+
+    m_driverController.options().whileTrue(driveFieldOrientedPrecisionMode);
 
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromRadians(0))));
     m_driverController.square()
