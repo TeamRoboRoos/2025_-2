@@ -72,7 +72,7 @@ public class AlignToTagCommand extends Command {
 
     SmartDashboard.putNumber("Close_Rot_P", 10);
 
-    SmartDashboard.putNumber("divisor for cant see speed", 0.7);
+    SmartDashboard.putNumber("divisor for cant see speed", 0.2);
 
     runningAverage = new LinkedList<Double>();
     ummeasureAngleAverage = new LinkedList<Double>();
@@ -89,6 +89,8 @@ public class AlignToTagCommand extends Command {
   @Override
   public void initialize() {
 
+    
+    LimelightHelpers.setLEDMode_ForceOn(("limelight-limey"));
     SmartDashboard.putBoolean("running", true);
     SmartDashboard.putBoolean("found_target", false);
     SmartDashboard.putBoolean("finished_alignment", false);
@@ -264,6 +266,7 @@ public class AlignToTagCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("running", false);
+    LimelightHelpers.setLEDMode_ForceOff("limelight-limey");
     swerve.stopPlease();
 
   }

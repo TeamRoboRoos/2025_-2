@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TurnToAngleCommand extends Command {
+public class TurnTo0Command extends Command {
   private SwerveSubsystem swerve;
 
   private PIDController turningPidController;
@@ -32,7 +32,7 @@ public class TurnToAngleCommand extends Command {
   private int tid;
 
   /** Creates a new TurnToAngleCommand. */
-  public TurnToAngleCommand(SwerveSubsystem swerve) {
+  public TurnTo0Command(SwerveSubsystem swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerve = swerve;
     addRequirements(swerve);
@@ -71,12 +71,9 @@ public class TurnToAngleCommand extends Command {
     turningPidController.setP(SmartDashboard.getNumber("turningP", 0));
     turningPidController.setI(SmartDashboard.getNumber("turningI", 0));
     turningPidController.setD(SmartDashboard.getNumber("turningD", 0));
-    int desired_angle = AprilTags[tid-1];
-    if (tid != -1) {
-      desired_angle = AprilTags[tid-1];
-    } else {
-      desired_angle = 0;
-    }
+    
+    int desired_angle = 0;
+    
     double rotational_velocity = turningPidController.calculate(SmartDashboard.getNumber("Gyro", 0), desired_angle);
 
     

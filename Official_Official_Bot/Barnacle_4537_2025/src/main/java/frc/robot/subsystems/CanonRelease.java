@@ -11,26 +11,20 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AlgaeRemover extends SubsystemBase {
+public class CanonRelease extends SubsystemBase {
 
   private Servo deployerServo;
-  private SparkMax algaeRemoverMotor;
 
   /** Creates a new AlgaeRemover. */
-  public AlgaeRemover() {
-    deployerServo = new Servo(0);
-    deployerServo.set(1.0); // TODO Check servo positions
-
-    algaeRemoverMotor = new SparkMax(21, MotorType.kBrushed); // TODO spark max ID
+  public CanonRelease() {
+    deployerServo = new Servo(1);
+    deployerServo.set(0.0); // TODO Check servo positions
   }
 
   public Command deployAlgaeRemover() {
     return runOnce(() -> deployerServo.set(0.6));
   }
 
-  public Command runAlgaeRemoverMotor() {
-    return runEnd(() -> algaeRemoverMotor.set(1), () -> algaeRemoverMotor.set(0.0));
-  }
 
   @Override
   public void periodic() {

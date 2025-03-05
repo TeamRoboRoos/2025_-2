@@ -65,6 +65,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public SwerveSubsystem() {
     runningAverage = new LinkedList<Double>();
 
+
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.SwerveConstants.maxSpeed,
           new Pose2d(new Translation2d(Meter.of(1),
@@ -87,6 +88,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     posePublisher = NetworkTableInstance.getDefault()
         .getStructTopic("RobotPose", Pose2d.struct).publish();
+
+    
+        resetGyro(Rotation2d.fromDegrees(180));
+
 
     setupPathPlanner();
   }
@@ -181,7 +186,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Gyro", inputModulus(getAHRSAngle().getDegrees(), -180, 180));
     posePublisher.set(swerveDrive.getPose());
-    System.out.println(getAHRSAngle().getDegrees());
+    // System.out.println(getAHRSAngle().getDegrees());
   }
 
   @Override

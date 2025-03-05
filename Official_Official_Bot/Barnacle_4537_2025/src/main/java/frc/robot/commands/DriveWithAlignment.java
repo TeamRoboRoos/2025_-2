@@ -57,11 +57,11 @@ public class DriveWithAlignment extends Command {
     SmartDashboard.putNumber("limeyForD", 0.0);
 
     SmartDashboard.putNumber("threshold", 10);
-    SmartDashboard.putNumber("multiplier", 20);
+    SmartDashboard.putNumber("multiplier", 30);
 
     SmartDashboard.putNumber("RotTol", 5);
     SmartDashboard.putNumber("SideTol", 5);
-    SmartDashboard.putNumber("ForTol", 5);
+    SmartDashboard.putNumber("ForTol", 0.1);
 
     SmartDashboard.putNumber("stage_2_sidetol", 5);
 
@@ -81,6 +81,9 @@ public class DriveWithAlignment extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    LimelightHelpers.setLEDMode_PipelineControl("limelight-limey");
+    LimelightHelpers.setLEDMode_ForceOn(("limelight-limey"));
 
     SmartDashboard.putBoolean("running", true);
     SmartDashboard.putBoolean("found_target", false);
@@ -219,14 +222,14 @@ public class DriveWithAlignment extends Command {
   //   }
   // }
 
-  swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, sideways_velocity, rotational_velocity));
+  swerve.driveRobotOriented(new ChassisSpeeds(forwards_velocity, sideways_velocity*0.5, rotational_velocity));
 
   SmartDashboard.putBoolean("intial_sideways_alignment", initial_sideways_alignment);
 
     // Check if its redy to score
     if (Math.abs(bot_pose_yaw) < SmartDashboard.getNumber("RotTol", 5)
         && Math.abs(tx) < SmartDashboard.getNumber("SideTol", 5) && runningAverage.size() >= runningAverageSize
-        && Math.abs(tz) < 1 && Math.abs(SmartDashboard.getNumber("newTy", 5)) < SmartDashboard.getNumber("ForTol", 5)){
+        && Math.abs(tz) < 1 && Math.abs(SmartDashboard.getNumber("newTy", 0.1)) < SmartDashboard.getNumber("ForTol", 0.1)){
 
       SmartDashboard.putBoolean("finished_alignment", true);
       System.out.println("DONE");
@@ -238,6 +241,7 @@ public class DriveWithAlignment extends Command {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("running", false);
+    LimelightHelpers.setLEDMode_ForceOff("limelight-limey");
     swerve.stopPlease();
   }
 
