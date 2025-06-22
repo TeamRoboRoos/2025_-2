@@ -28,6 +28,7 @@ public class CannonSubsystem extends SubsystemBase {
         return new StartEndCommand(() -> cannonMotor.set(1), () -> cannonMotor.set(0), this).withTimeout(1);
     };
     public Command loadCannon(){
+        System.out.println("halooooo");
         return new StartEndCommand(() -> cannonMotor.set(-1), () -> cannonMotor.set(0), this).until(() -> !intakeSwitch.get());
     };
 

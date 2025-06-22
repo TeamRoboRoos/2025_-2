@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToTagCommand;
+import frc.robot.commands.AutoDriveWithAlignment;
 import frc.robot.commands.DriveWithAlignment;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommand;
@@ -92,7 +93,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("cannonGoBrr", m_cannonSubsystem.runCannon());
     NamedCommands.registerCommand("armGoBrr", m_lift.toggleLiftState());
     NamedCommands.registerCommand("stopCannon", m_cannonSubsystem.runCannon());
+    NamedCommands.registerCommand("intakeCoral", m_cannonSubsystem.loadCannon());
+
     NamedCommands.registerCommand("faceForwards", new TurnTo180Command(drivebase));
+    
+    NamedCommands.registerCommand("driveWithAlignment", new DriveWithAlignment(drivebase).withTimeout(5000));
+    NamedCommands.registerCommand("autodriveWithAlignment", new AutoDriveWithAlignment(drivebase).withTimeout(5000));
     // NamedCommands.registerCommand("deploy", m_AlgaeRemover.deployAlgaeRemover());
     // NamedCommands.registerCommand("algaeGoBrr", m_AlgaeRemover.runAlgaeRemoverMotor());
     drivebase.setDefaultCommand(driveFieldOrientedDirectAngularVelocity);

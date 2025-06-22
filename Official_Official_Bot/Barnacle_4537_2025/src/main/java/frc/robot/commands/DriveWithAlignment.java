@@ -76,6 +76,8 @@ public class DriveWithAlignment extends Command {
     forwardsPidController = new PIDController(0.03, 0, 0);
 
     initial_sideways_alignment = false;
+
+    System.out.println("hi im running");
   }
 
   // Called when the command is initially scheduled.

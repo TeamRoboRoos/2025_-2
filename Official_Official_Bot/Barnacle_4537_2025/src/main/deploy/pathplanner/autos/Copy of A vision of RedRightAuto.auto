@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueRightAuto1"
+            "pathName": "RedRightAuto1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -25,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueRightAuto2"
+            "pathName": "a vision straighjt"
           }
         }
       ]

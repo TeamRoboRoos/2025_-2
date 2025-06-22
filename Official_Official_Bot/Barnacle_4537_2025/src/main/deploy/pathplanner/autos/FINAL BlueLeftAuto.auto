@@ -27,6 +27,30 @@
           "data": {
             "pathName": "BlueLeftAuto2"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RotationPID"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCannon"
+          }
         }
       ]
     }
