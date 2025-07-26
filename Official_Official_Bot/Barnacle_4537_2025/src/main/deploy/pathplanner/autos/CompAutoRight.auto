@@ -7,49 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RedLeftAuto1"
+            "pathName": "AutoRightPath1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "armGoBrr"
+            "name": "turnToTag"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "cannonGoBrr"
+            "name": "driveWithAlignment"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopCannon"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "armGoBrr"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RedLeftAuto2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RedCenterAuto3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "armGoBrr"
+            "name": "driveForwards"
           }
         },
         {
@@ -59,33 +35,51 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "stopCannon"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "armGoBrr"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RedCenterAuto3"
+            "pathName": "AutoRightPath2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "armGoBrr"
+            "name": "intakeCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AutoRightPart3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "turnToTag"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveWithAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveForwards"
           }
         },
         {
@@ -95,15 +89,27 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "stopCannon"
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "AutoRightPath4"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "armGoBrr"
+            "name": "resetGyro"
           }
         }
       ]

@@ -61,7 +61,7 @@ public class DriveWithAlignment extends Command {
 
     SmartDashboard.putNumber("RotTol", 5);
     SmartDashboard.putNumber("SideTol", 5);
-    SmartDashboard.putNumber("ForTol", 0.1);
+    SmartDashboard.putNumber("ForTol", 0.05);
 
     SmartDashboard.putNumber("stage_2_sidetol", 5);
 
@@ -237,7 +237,12 @@ public class DriveWithAlignment extends Command {
       System.out.println("DONE");
       shouldFinish = true;
     }
+
+    // if (limelight_tid == -1) {
+    //   // System.out.println("LOST");
+    // }
   }
+
 
   // Called once the command ends or is interrupted.
   @Override

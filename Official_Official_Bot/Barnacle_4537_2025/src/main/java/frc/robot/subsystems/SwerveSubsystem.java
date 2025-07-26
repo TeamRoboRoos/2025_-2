@@ -9,6 +9,8 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,6 +49,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -54,7 +57,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private double last_bot_pose_yaw;
   private double bot_pose_yaw;
-
   /** Creates a new ExampleSubsystem. */
 
   File directory = new File(Filesystem.getDeployDirectory(), "swerve");
@@ -63,6 +65,10 @@ public class SwerveSubsystem extends SubsystemBase {
   StructPublisher<Pose2d> posePublisher;
 
   public SwerveSubsystem() {
+    SmartDashboard.putBoolean("firsttime", false);
+
+
+
     runningAverage = new LinkedList<Double>();
 
 
@@ -124,6 +130,10 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
+    
+
+    SmartDashboard.putBoolean("inAuto", DriverStation.isAutonomous());
+
     SmartDashboard.putNumber("tz", (NetworkTableInstance.getDefault().getTable("limelight-limey")
         .getEntry("botpose_targetspace").getDoubleArray(new double[6]))[2]);
     SmartDashboard.putNumber("botpose_targetspace", (NetworkTableInstance.getDefault().getTable("limelight-limey")
@@ -181,7 +191,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     } else {
       SmartDashboard.putBoolean("Aligned To Tag Angle", false);
-      SmartDashboard.putBoolean("Ready To Score", false);
+      SmartDashboard.putBoolean("Ready To Score", false); SmartDashboard.putNumber("primaryTag!", (int) NetworkTableInstance.getDefault().getTable("limelight-limey").getEntry("tid")
+      .getInteger(0));
     }
 
     SmartDashboard.putNumber("Gyro", inputModulus(getAHRSAngle().getDegrees(), -180, 180));
@@ -286,6 +297,8 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.resetOdometry(new Pose2d(pose.getX(), pose.getY(), angle));
 
     getAHRS().reset();
+    
+    
   }
 
   public static double inputModulus(double input, double minimumInput, double maximumInput) {

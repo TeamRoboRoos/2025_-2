@@ -7,7 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto1"
+            "pathName": "AutoRightPath1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "turnToTag"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveWithAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveForwards"
           }
         },
         {
@@ -19,7 +37,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.2
           }
         },
         {
@@ -31,49 +49,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RedCenterAuto2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RedCenterAuto3"
+            "pathName": "b right 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "cannonGoBrr"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RedCenterAuto4"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RedCenterAuto3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "cannonGoBrr"
+            "name": "resetGyro"
           }
         }
       ]

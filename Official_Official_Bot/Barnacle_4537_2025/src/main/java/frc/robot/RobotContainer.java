@@ -18,8 +18,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToTagCommand;
 import frc.robot.commands.AutoDriveWithAlignment;
 import frc.robot.commands.DriveWithAlignment;
+import frc.robot.commands.DriveForwards;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.DriveForwards;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.subsystems.CanonRelease;
@@ -90,15 +92,19 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    NamedCommands.registerCommand("cannonGoBrr", m_cannonSubsystem.runCannon());
+    NamedCommands.registerCommand("cannonGoBrr", m_cannonSubsystem.AutorunCannon());
     NamedCommands.registerCommand("armGoBrr", m_lift.toggleLiftState());
     NamedCommands.registerCommand("stopCannon", m_cannonSubsystem.runCannon());
     NamedCommands.registerCommand("intakeCoral", m_cannonSubsystem.loadCannon());
 
     NamedCommands.registerCommand("faceForwards", new TurnTo180Command(drivebase));
     
-    NamedCommands.registerCommand("driveWithAlignment", new DriveWithAlignment(drivebase).withTimeout(5000));
-    NamedCommands.registerCommand("autodriveWithAlignment", new AutoDriveWithAlignment(drivebase).withTimeout(5000));
+    NamedCommands.registerCommand("driveWithAlignment", new DriveWithAlignment(drivebase).withTimeout(3.5));
+    NamedCommands.registerCommand("driveForwards", new DriveForwards(drivebase).withTimeout(0.5));
+    NamedCommands.registerCommand("resetGyro", new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
+    
+    NamedCommands.registerCommand("turnToTag", new TurnToAngleCommand(drivebase).withTimeout(0.5));
+    NamedCommands.registerCommand("autodriveWithAlignment", new AutoDriveWithAlignment(drivebase).withTimeout(10));
     // NamedCommands.registerCommand("deploy", m_AlgaeRemover.deployAlgaeRemover());
     // NamedCommands.registerCommand("algaeGoBrr", m_AlgaeRemover.runAlgaeRemoverMotor());
     drivebase.setDefaultCommand(driveFieldOrientedDirectAngularVelocity);
@@ -168,7 +174,7 @@ public class RobotContainer {
     m_driverController.R1().whileTrue(new AlignToTagCommand(drivebase));
     m_driverController.R2().whileTrue(new DriveWithAlignment(drivebase));
     m_driverController.cross().whileTrue(new TurnToAngleCommand(drivebase));
-    m_driverController.square().whileTrue(new TurnTo0Command(drivebase));
+    m_driverController.square().whileTrue(new DriveForwards(drivebase));
     m_driverController.triangle().onTrue(new InstantCommand(() -> drivebase.resetGyro(Rotation2d.fromDegrees(0))));
     m_driverController.L1().whileTrue(driveFieldOrientedPrecisionMode);
     m_driverController.L2().whileTrue(driveFieldOrientedUltraPrecisionMode);

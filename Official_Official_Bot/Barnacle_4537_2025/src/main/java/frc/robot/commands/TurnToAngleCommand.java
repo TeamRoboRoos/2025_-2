@@ -24,7 +24,9 @@ public class TurnToAngleCommand extends Command {
 // Red
   // private int[] AprilTags = {0,0,0,0,0, 45, 0, -45, -135, 179, 135,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 // Blue
-  private int[] AprilTags = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-45, 0, 45, 135, -179, -135, 0, 0,0,0,0,0,0,0,0,0,0,0,0};
+  private int[] AprilTags = {0};
+  public int[] autoss =    {0,0,0,0,0,-130,-180,130 ,60  ,0   ,-60,0,0,0,0,0,130,-180,-130,-60,0   ,60};
+  private int[] teleop =   {0,0,0,0,0,60  ,0   ,-60,-130,-180,130,0,0,0,0,0,-60,0   ,60  ,130,-180,-130};
 
 
   private boolean shouldFinish = false;
@@ -50,6 +52,7 @@ public class TurnToAngleCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("i am working");
     LimelightHelpers.setLEDMode_ForceOn(("limelight-limey"));
     tid = -1;
     tid = (int) SmartDashboard.getNumber("primaryTag!", 0);
@@ -61,6 +64,13 @@ public class TurnToAngleCommand extends Command {
 
     }
     SmartDashboard.putNumber("chosen_id", tid);
+    AprilTags=autoss;
+    if (SmartDashboard.getBoolean("inAuto", false)==true){
+      AprilTags=autoss;
+    } else {
+      AprilTags=teleop;
+      System.out.println("this shouldnt be happening");
+    }
 
   }
 
@@ -71,7 +81,7 @@ public class TurnToAngleCommand extends Command {
     turningPidController.setP(SmartDashboard.getNumber("turningP", 0));
     turningPidController.setI(SmartDashboard.getNumber("turningI", 0));
     turningPidController.setD(SmartDashboard.getNumber("turningD", 0));
-    int desired_angle = AprilTags[tid-1];
+    int desired_angle = 0;
     if (tid != -1) {
       desired_angle = AprilTags[tid-1];
     } else {
@@ -88,6 +98,7 @@ public class TurnToAngleCommand extends Command {
     if ((desired_angle - 5) < SmartDashboard.getNumber("Gyro", 0) + 0
         && SmartDashboard.getNumber("Gyro", 0) + 0 < (desired_angle + 5)) {
       shouldFinish = true;
+      System.out.println("YIPPEYAYA");
     }
 
   }

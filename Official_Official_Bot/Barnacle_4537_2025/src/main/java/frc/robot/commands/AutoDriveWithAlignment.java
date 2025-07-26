@@ -100,6 +100,7 @@ public class AutoDriveWithAlignment extends Command {
     shouldFinish = false;
 
     first_rotated = false;
+    System.out.println("START AUTO VISION");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -229,15 +230,23 @@ public class AutoDriveWithAlignment extends Command {
   SmartDashboard.putBoolean("intial_sideways_alignment", initial_sideways_alignment);
 
     // Check if its redy to score
-    if (Math.abs(bot_pose_yaw) < SmartDashboard.getNumber("RotTol", 5)
-        && Math.abs(tx) < SmartDashboard.getNumber("SideTol", 5) && runningAverage.size() >= runningAverageSize
-        && Math.abs(tz) < 1 && Math.abs(SmartDashboard.getNumber("newTy", 0.1)) < SmartDashboard.getNumber("ForTol", 0.1) && limelight_tid != -1 ){
+  if (Math.abs(bot_pose_yaw) < SmartDashboard.getNumber("RotTol", 5)
+      && Math.abs(tx) < SmartDashboard.getNumber("SideTol", 5) && runningAverage.size() >= runningAverageSize
+      && Math.abs(tz) < 1 && Math.abs(SmartDashboard.getNumber("newTy", 0.1)) < SmartDashboard.getNumber("ForTol", 0.1) && limelight_tid != -1 ){
 
-      SmartDashboard.putBoolean("finished_alignment", true);
-      System.out.println("DONE");
-      shouldFinish = true;
-    }
+          
+    SmartDashboard.putBoolean("finished_alignment", true);
+    System.out.println("DONE");
+    shouldFinish = true;
+      
   }
+  
+
+  if (limelight_tid == -1) {
+    System.out.println("LOST");
+  }
+
+}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -245,6 +254,7 @@ public class AutoDriveWithAlignment extends Command {
     SmartDashboard.putBoolean("running", false);
     LimelightHelpers.setLEDMode_ForceOff("limelight-limey");
     swerve.stopPlease();
+    System.out.println("STOP AUTO VISION");
   }
 
   // Returns true when the command should end.

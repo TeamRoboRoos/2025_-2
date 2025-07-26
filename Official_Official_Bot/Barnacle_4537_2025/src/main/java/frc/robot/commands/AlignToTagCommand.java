@@ -259,6 +259,10 @@ public class AlignToTagCommand extends Command {
       System.out.println("DONE");
       shouldFinish = true;
     }
+
+    if (limelight_tid == -1) {
+      System.out.println("LOST");
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -22,10 +22,15 @@ public class CannonSubsystem extends SubsystemBase {
         intakeSwitch = new DigitalInput(0);
     }
     public Command runCannon(){
-        return new StartEndCommand(() -> cannonMotor.set(-1), () -> cannonMotor.set(0), this).withTimeout(1);
+        System.out.println("CANONNNN");
+        return new StartEndCommand(() -> cannonMotor.set(-1), () -> cannonMotor.set(0), this).withTimeout(0.8);
+    };
+    public Command AutorunCannon(){
+        System.out.println("CANONNNN");
+        return new StartEndCommand(() -> cannonMotor.set(-1), () -> cannonMotor.set(0), this).until(() -> intakeSwitch.get()).withTimeout(0.8);
     };
     public Command backItUp(){
-        return new StartEndCommand(() -> cannonMotor.set(1), () -> cannonMotor.set(0), this).withTimeout(1);
+        return new StartEndCommand(() -> cannonMotor.set(1), () -> cannonMotor.set(0), this).withTimeout(0.8);
     };
     public Command loadCannon(){
         System.out.println("halooooo");

@@ -7,13 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueLeftAuto1"
+            "pathName": "AutoLeftPath1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "turnToTag"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveWithAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveForwards"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "cannonGoBrr"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
@@ -25,31 +49,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueLeftAuto2"
+            "pathName": "AutoLeftPath4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intakeCoral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RotationPID"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "cannonGoBrr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopCannon"
+            "name": "resetGyro"
           }
         }
       ]
